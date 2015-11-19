@@ -100,19 +100,19 @@ namespace Test {
 		public void Split() {
 			var deck = CardGroup.MakeStandardDeck();
 			var split = deck.Split();
-			Assert.NotNull(split.Item1);
-			Assert.NotNull(split.Item2);
-			Assert.True(split.Item1.Size == 26);
-			Assert.True(split.Item2.Size == 26);
+			Assert.NotNull(split.Top);
+			Assert.NotNull(split.Bottom);
+			Assert.True(split.Top.Size == 26);
+			Assert.True(split.Bottom.Size == 26);
 
 			deck = CardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(0));
 			split = deck.Split(13);
-			Assert.NotNull(split.Item1);
-			Assert.NotNull(split.Item2);
-			Assert.True(split.Item1.Size == 13);
-			Assert.True(split.Item2.Size == 39);
+			Assert.NotNull(split.Top);
+			Assert.NotNull(split.Bottom);
+			Assert.True(split.Top.Size == 13);
+			Assert.True(split.Bottom.Size == 39);
 		}
 
 		[TestMethod]

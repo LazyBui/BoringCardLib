@@ -30,7 +30,7 @@ namespace BoringCardLib {
 
 		public static CardGroup MakeStandardDeck(bool pIncludeJokers = false) {
 			var cards = new List<Card>();
-			foreach (var suit in EnumExt.CastedValues<Suit>()) {
+			foreach (var suit in EnumExt<Suit>.GetValues()) {
 				if (suit == Suit.Joker) continue;
 				cards.AddRange(MakeFullSuit(suit));
 			}
@@ -48,7 +48,7 @@ namespace BoringCardLib {
 			if (pSuit == Suit.Joker) throw new ArgumentException("Must not be a joker", nameof(pSuit));
 
 			var cards = new List<Card>();
-			foreach (var rank in EnumExt.CastedValues<Rank>()) {
+			foreach (var rank in EnumExt<Rank>.GetValues()) {
 				if (rank == Rank.Joker) continue;
 				cards.Add(new Card(pSuit, rank));
 			}
@@ -232,13 +232,13 @@ namespace BoringCardLib {
 			return groups.AsReadOnly();
 		}
 
-		public Tuple<CardGroup, CardGroup> Split() {
+		public SplitResult Split() {
 			return Split(Size / 2);
 		}
 
-		public Tuple<CardGroup, CardGroup> Split(int pSplitPoint) {
+		public SplitResult Split(int pSplitPoint) {
 			if (pSplitPoint <= 0) throw new ArgumentException("Must be > 0", nameof(pSplitPoint));
-			return Tuple.Create(
+			return new SplitResult(
 				new CardGroup(mCards.Take(pSplitPoint).ToArray()),
 				new CardGroup(mCards.Skip(pSplitPoint).ToArray()));
 		}
