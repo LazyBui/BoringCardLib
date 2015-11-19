@@ -23,14 +23,14 @@ namespace BoringCardLib {
 			}
 			if (pSuits != null) {
 				if (pSuits.Count() == 0) throw new ArgumentException("Must have elements", nameof(pSuits));
-				if (pSuit != null) throw new ArgumentException("Must not specify both pSuit and pSuits");
+				if (pSuit != null) throw new ArgumentException($"Must not specify both {nameof(pSuit)} and {nameof(pSuits)}");
 				foreach (var suit in pSuits) {
 					suit.ThrowIfInvalid(nameof(pSuits));
 				}
 			}
 			if (pRanks != null) {
 				if (pRanks.Count() == 0) throw new ArgumentException("Must have elements", nameof(pRanks));
-				if (pRank != null) throw new ArgumentException("Must not specify both pRank and pRanks");
+				if (pRank != null) throw new ArgumentException($"Must not specify both {nameof(pRank)} and {nameof(pRanks)}");
 				foreach (var rank in pRanks) {
 					rank.ThrowIfInvalid(nameof(pRanks));
 				}
