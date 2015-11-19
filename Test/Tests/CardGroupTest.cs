@@ -51,6 +51,75 @@ namespace Test {
 				}
 				elem++;
 			}
+
+			deck = new CardGroup();
+			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.Top; });
+			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.Bottom; });
+		}
+
+		[TestMethod]
+		public void MakeStandardDeck() {
+			var deck = CardGroup.MakeStandardDeck();
+			Assert.True(deck.Size == 52);
+
+			var ranks = new[] {
+				Rank.Two,
+				Rank.Three,
+				Rank.Four,
+				Rank.Five,
+				Rank.Six,
+				Rank.Seven,
+				Rank.Eight,
+				Rank.Nine,
+				Rank.Ten,
+				Rank.Jack,
+				Rank.Queen,
+				Rank.King,
+				Rank.Ace
+			};
+			Action<Suit> verifySuit = s => {
+				Assert.Exactly(deck, 13, v => v.Suit == s);
+				Assert.True(ranks.All(r => deck.Any(v => v.Suit == s && v.Rank == r)));
+			};
+
+			verifySuit(Suit.Clubs);
+			verifySuit(Suit.Diamonds);
+			verifySuit(Suit.Hearts);
+			verifySuit(Suit.Spades);
+
+			deck = CardGroup.MakeStandardDeck(true);
+			Assert.True(deck.Size == 54);
+
+			verifySuit(Suit.Clubs);
+			verifySuit(Suit.Diamonds);
+			verifySuit(Suit.Hearts);
+			verifySuit(Suit.Spades);
+			Assert.True(deck.Count(v => v.Suit == Suit.Joker && v.Rank == Rank.Joker) == 2);
+		}
+
+		[TestMethod]
+		public void MakeFullSuit() {
+			var deck = CardGroup.MakeFullSuit(Suit.Spades);
+			Assert.True(deck.Size == 13);
+			Assert.All(deck, v => v.Suit == Suit.Spades);
+			var ranks = new[] {
+				Rank.Two,
+				Rank.Three,
+				Rank.Four,
+				Rank.Five,
+				Rank.Six,
+				Rank.Seven,
+				Rank.Eight,
+				Rank.Nine,
+				Rank.Ten,
+				Rank.Jack,
+				Rank.Queen,
+				Rank.King,
+				Rank.Ace
+			};
+			Assert.True(ranks.All(r => deck.Any(v => v.Rank == r)));
+
+			Assert.ThrowsExact<ArgumentException>(() => deck = CardGroup.MakeFullSuit((Suit)(-1)));
 		}
 
 		[TestMethod]
@@ -78,11 +147,21 @@ namespace Test {
 		[TestMethod]
 		public void AppendAndPrepend() {
 			var deck = CardGroup.MakeStandardDeck();
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Append(null as Card[]));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Append(null as IEnumerable<Card>));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Append());
+			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new Card[0]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new List<Card>()));
 			var card = deck.Draw();
 			deck.Append(card);
 			Assert.Equal(deck.Bottom, card);
 
 			deck = CardGroup.MakeStandardDeck();
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Prepend(null as Card[]));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Prepend(null as IEnumerable<Card>));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend());
+			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new Card[0]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new List<Card>()));
 			card = deck.Draw();
 			deck.Prepend(card);
 			Assert.Equal(deck.Top, card);
@@ -91,6 +170,8 @@ namespace Test {
 		[TestMethod]
 		public void Shuffle() {
 			var deck = CardGroup.MakeStandardDeck();
+			Assert.Throws<ArgumentException>(() => deck.Shuffle(-1));
+			Assert.Throws<ArgumentException>(() => deck.Shuffle(0));
 			var ordered = new CardGroup(deck);
 			deck.Shuffle();
 			Assert.NotEqual(deck, ordered);
