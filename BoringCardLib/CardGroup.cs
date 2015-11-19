@@ -83,12 +83,10 @@ namespace BoringCardLib {
 			if (pTimes <= 0) throw new ArgumentException("Must be > 0", nameof(pTimes));
 
 			int n = mCards.Count;
-			var rand = new Sampler();
-
 			do {
 				for (int i = 0; i < n; i++) {
 					var temp = mCards[i];
-					int r = i + rand.SampleInt32(n - i);
+					int r = i + Sampler.SampleInt32(n - i);
 					mCards[i] = mCards[r];
 					mCards[r] = temp;
 				}
