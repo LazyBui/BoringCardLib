@@ -22,38 +22,38 @@ namespace BoringCardLib {
 
 		public Hasher() { CurrentHashValue = sBaseHashValue; }
 
-		public Hasher Combine<TElement>(IEnumerable<TElement> pValue) {
-			this.Combine(0);
-			if (pValue == null) return this;
-			foreach (var data in pValue) {
-				this.Combine(data);
+		public Hasher Combine<TElement>(IEnumerable<TElement> value) {
+			Combine(0);
+			if (value == null) return this;
+			foreach (var data in value) {
+				Combine(data);
 			}
 			return this;
 		}
 
-		public Hasher Combine<TElement>(IEnumerable<TElement> pValue, IEqualityComparer<TElement> pComparer) {
-			this.Combine(0);
-			if (pValue == null) return this;
-			foreach (var data in pValue) {
-				this.Combine(data, pComparer);
+		public Hasher Combine<TElement>(IEnumerable<TElement> value, IEqualityComparer<TElement> comparer) {
+			Combine(0);
+			if (value == null) return this;
+			foreach (var data in value) {
+				Combine(data, comparer);
 			}
 			return this;
 		}
 
-		public Hasher Combine(object pValue) {
+		public Hasher Combine(object value) {
 			int hashCode = 0;
-			if (pValue != null) hashCode = pValue.GetHashCode();
-			return this.Combine(hashCode);
+			if (value != null) hashCode = value.GetHashCode();
+			return Combine(hashCode);
 		}
 
-		public Hasher Combine<TElement>(TElement pValue, IEqualityComparer<TElement> pComparer) {
+		public Hasher Combine<TElement>(TElement value, IEqualityComparer<TElement> comparer) {
 			int hashCode = 0;
-			if (pValue != null) hashCode = pComparer.GetHashCode(pValue);
-			return this.Combine(hashCode);
+			if (value != null) hashCode = comparer.GetHashCode(value);
+			return Combine(hashCode);
 		}
 
-		public Hasher Combine(int pHashCode) {
-			unchecked { CurrentHashValue = (CurrentHashValue * (int)0xA5555529) + pHashCode; }
+		public Hasher Combine(int hash) {
+			unchecked { CurrentHashValue = (CurrentHashValue * (int)0xA5555529) + hash; }
 			return this;
 		}
 

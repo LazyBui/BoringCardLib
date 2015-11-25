@@ -30,10 +30,10 @@ namespace BoringCardLib {
 			return BitConverter.ToInt32(SampleInternal().Take(sizeof(int)).ToArray(), 0) & int.MaxValue;
 		}
 
-		private int SampleInt32Internal(int pMaximum) {
-			if (pMaximum <= 0) throw new ArgumentException("Must be > 0", nameof(pMaximum));
+		private int SampleInt32Internal(int max) {
+			if (max <= 0) throw new ArgumentException("Must be > 0", nameof(max));
 			const int minimum = 0;
-			return (int)(minimum + (pMaximum - minimum) * (SampleInt32Internal() / (double)int.MaxValue));
+			return (int)(minimum + (max - minimum) * (SampleInt32Internal() / (double)int.MaxValue));
 		}
 
 		public static IEnumerable<byte> Sample() {
@@ -44,8 +44,8 @@ namespace BoringCardLib {
 			return Instance.SampleInt32Internal();
 		}
 
-		public static int SampleInt32(int pMaximum) {
-			return Instance.SampleInt32Internal(pMaximum);
+		public static int SampleInt32(int max) {
+			return Instance.SampleInt32Internal(max);
 		}
 
 		#region IDisposable Support

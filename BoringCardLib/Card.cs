@@ -6,18 +6,18 @@ namespace BoringCardLib {
 		public Rank Rank { get; private set; }
 		public int? Value { get; private set; }
 
-		public Card(Suit pSuit, Rank pRank, int? pPointValue = null) {
-			pSuit.ThrowIfInvalid(nameof(pSuit));
-			pRank.ThrowIfInvalid(nameof(pRank));
-			if ((pSuit == Suit.Joker) != (pRank == Rank.Joker)) throw new ArgumentException("Jokers may only have the joker rank/suit");
+		public Card(Suit suit, Rank rank, int? pointValue = null) {
+			suit.ThrowIfInvalid(nameof(suit));
+			rank.ThrowIfInvalid(nameof(rank));
+			if ((suit == Suit.Joker) != (rank == Rank.Joker)) throw new ArgumentException("Jokers may only have the joker rank/suit");
 
-			Suit = pSuit;
-			Rank = pRank;
-			Value = pPointValue;
+			Suit = suit;
+			Rank = rank;
+			Value = pointValue;
 		}
 
-		public Card WithValue(int pNewValue) {
-			return new Card(Suit, Rank, pNewValue);
+		public Card WithValue(int newValue) {
+			return new Card(Suit, Rank, newValue);
 		}
 
 		public override int GetHashCode() {

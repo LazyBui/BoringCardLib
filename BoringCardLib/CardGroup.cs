@@ -21,20 +21,20 @@ namespace BoringCardLib {
 			}
 		}
 
-		public CardGroup(IEnumerable<Card> pCards) : this(pCards.ToArray()) { }
-		public CardGroup(params Card[] pCards) {
-			if (pCards == null) throw new ArgumentNullException(nameof(pCards));
-			if (pCards.Any(c => c == null)) throw new ArgumentException("Must have no nulls", nameof(pCards));
-			mCards.AddRange(pCards);
+		public CardGroup(IEnumerable<Card> cards) : this(cards.ToArray()) { }
+		public CardGroup(params Card[] cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			if (cards.Any(c => c == null)) throw new ArgumentException("Must have no nulls", nameof(cards));
+			mCards.AddRange(cards);
 		}
 
-		public static CardGroup MakeStandardDeck(bool pIncludeJokers = false) {
+		public static CardGroup MakeStandardDeck(bool includeJokers = false) {
 			var cards = new List<Card>();
 			foreach (var suit in EnumExt<Suit>.GetValues()) {
 				if (suit == Suit.Joker) continue;
 				cards.AddRange(MakeFullSuit(suit));
 			}
-			if (pIncludeJokers) {
+			if (includeJokers) {
 				cards.AddRange(new[] {
 					new Card(Suit.Joker, Rank.Joker),
 					new Card(Suit.Joker, Rank.Joker),
@@ -43,44 +43,44 @@ namespace BoringCardLib {
 			return new CardGroup(cards);
 		}
 
-		public static CardGroup MakeFullSuit(Suit pSuit) {
-			pSuit.ThrowIfInvalid(nameof(pSuit));
-			if (pSuit == Suit.Joker) throw new ArgumentException("Must not be a joker", nameof(pSuit));
+		public static CardGroup MakeFullSuit(Suit suit) {
+			suit.ThrowIfInvalid(nameof(suit));
+			if (suit == Suit.Joker) throw new ArgumentException("Must not be a joker", nameof(suit));
 
 			var cards = new List<Card>();
 			foreach (var rank in EnumExt<Rank>.GetValues()) {
 				if (rank == Rank.Joker) continue;
-				cards.Add(new Card(pSuit, rank));
+				cards.Add(new Card(suit, rank));
 			}
 			return new CardGroup(cards);
 		}
 
-		public void Prepend(IEnumerable<Card> pCards) {
-			if (pCards == null) throw new ArgumentNullException(nameof(pCards));
-			Prepend(pCards.ToArray());
+		public void Prepend(IEnumerable<Card> cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			Prepend(cards.ToArray());
 		}
 
-		public void Prepend(params Card[] pCards) {
-			if (pCards == null) throw new ArgumentNullException(nameof(pCards));
-			if (pCards.Length == 0) throw new ArgumentException("Must have elements", nameof(pCards));
-			for (int i = pCards.Length - 1; i >= 0; i--) {
-				mCards.Insert(0, pCards[i]);
+		public void Prepend(params Card[] cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			if (cards.Length == 0) throw new ArgumentException("Must have elements", nameof(cards));
+			for (int i = cards.Length - 1; i >= 0; i--) {
+				mCards.Insert(0, cards[i]);
 			}
 		}
 
-		public void Append(IEnumerable<Card> pCards) {
-			if (pCards == null) throw new ArgumentNullException(nameof(pCards));
-			Append(pCards.ToArray());
+		public void Append(IEnumerable<Card> cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			Append(cards.ToArray());
 		}
 
-		public void Append(params Card[] pCards) {
-			if (pCards == null) throw new ArgumentNullException(nameof(pCards));
-			if (pCards.Length == 0) throw new ArgumentException("Must have elements", nameof(pCards));
-			mCards.AddRange(pCards.ToList());
+		public void Append(params Card[] cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			if (cards.Length == 0) throw new ArgumentException("Must have elements", nameof(cards));
+			mCards.AddRange(cards.ToList());
 		}
 
-		public void Shuffle(int pTimes = 1) {
-			if (pTimes <= 0) throw new ArgumentException("Must be > 0", nameof(pTimes));
+		public void Shuffle(int times = 1) {
+			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
 
 			int n = mCards.Count;
 			do {
@@ -90,7 +90,7 @@ namespace BoringCardLib {
 					mCards[i] = mCards[r];
 					mCards[r] = temp;
 				}
-			} while (--pTimes > 0);
+			} while (--times > 0);
 		}
 
 		public Card Draw() {
@@ -100,27 +100,27 @@ namespace BoringCardLib {
 			return result;
 		}
 
-		public CardGroup Draw(int pCards) {
-			if (pCards <= 0) throw new ArgumentException("Must be > 0", nameof(pCards));
-			if (pCards >= Size) {
-				var cards = new CardGroup(mCards);
+		public CardGroup Draw(int cards) {
+			if (cards <= 0) throw new ArgumentException("Must be > 0", nameof(cards));
+			if (cards >= Size) {
+				var pile = new CardGroup(mCards);
 				mCards.Clear();
-				return cards;
+				return pile;
 			}
 
-			var result = mCards.Take(pCards).ToArray();
-			for (int i = 0; i < pCards; i++) {
+			var result = mCards.Take(cards).ToArray();
+			for (int i = 0; i < cards; i++) {
 				mCards.RemoveAt(0);
 			}
 			return new CardGroup(result);
 		}
 
-		public CardStackOperation Discard(Card pCard) {
-			if (pCard == null) throw new ArgumentNullException(nameof(pCard));
+		public CardStackOperation Discard(Card card) {
+			if (card == null) throw new ArgumentNullException(nameof(card));
 			CardStackOperation result = CardStackOperation.CardNotPresent;
 			for (int i = 0; i < mCards.Count; i++) {
 				var c = mCards[i];
-				if (c == pCard) {
+				if (c == card) {
 					result = CardStackOperation.Performed;
 					mCards.RemoveAt(i);
 					break;
@@ -129,29 +129,29 @@ namespace BoringCardLib {
 			return result;
 		}
 
-		public CardStackOperation Replace(Card pCard, Card pNewCard) {
-			if (pCard == null) throw new ArgumentNullException(nameof(pCard));
-			if (pNewCard == null) throw new ArgumentNullException(nameof(pNewCard));
+		public CardStackOperation Replace(Card card, Card replacement) {
+			if (card == null) throw new ArgumentNullException(nameof(card));
+			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
 			CardStackOperation result = CardStackOperation.CardNotPresent;
 			for (int i = 0; i < mCards.Count; i++) {
 				var c = mCards[i];
-				if (c == pCard) {
+				if (c == card) {
 					result = CardStackOperation.Performed;
-					mCards[i] = pNewCard;
+					mCards[i] = replacement;
 					break;
 				}
 			}
 			return result;
 		}
 
-		public CardGroup Discard(DiscardRequest pRequest) {
-			if (pRequest == null) throw new ArgumentNullException(nameof(pRequest));
-			bool hasQuantity = pRequest.Quantity != null;
-			bool hasRank = pRequest.Ranks.Any();
-			bool hasSuit = pRequest.Suits.Any();
-			int quantity = pRequest.Quantity.GetValueOrDefault(-1);
-			var suits = pRequest.Suits;
-			var ranks = pRequest.Ranks;
+		public CardGroup Discard(DiscardRequest request) {
+			if (request == null) throw new ArgumentNullException(nameof(request));
+			bool hasQuantity = request.Quantity != null;
+			bool hasRank = request.Ranks.Any();
+			bool hasSuit = request.Suits.Any();
+			int quantity = request.Quantity.GetValueOrDefault(-1);
+			var suits = request.Suits;
+			var ranks = request.Ranks;
 			var result = new List<Card>();
 
 			if (hasQuantity && !(hasRank || hasSuit)) {
@@ -161,7 +161,7 @@ namespace BoringCardLib {
 				}
 				else {
 					int startPoint = -1;
-					switch (pRequest.Direction) {
+					switch (request.Direction) {
 						case Direction.FromTop: startPoint = 0; break;
 						case Direction.FromBottom: startPoint = mCards.Count - quantity; break;
 						default: throw new NotImplementedException();
@@ -177,7 +177,7 @@ namespace BoringCardLib {
 					return rankValid && suitValid;
 				};
 
-				switch (pRequest.Direction) {
+				switch (request.Direction) {
 					case Direction.FromTop:
 						for (int i = 0; i < mCards.Count; i++) {
 							var card = mCards[i];
@@ -206,17 +206,17 @@ namespace BoringCardLib {
 			return new CardGroup(result);
 		}
 
-		public IEnumerable<CardGroup> Distribute(int pNumberOfPiles) {
-			if (pNumberOfPiles <= 1) throw new ArgumentException("Must be > 1", nameof(pNumberOfPiles));
-			if (pNumberOfPiles > Size) throw new ArgumentException("Must be <= current stack size", nameof(pNumberOfPiles));
+		public IEnumerable<CardGroup> Distribute(int numberOfPiles) {
+			if (numberOfPiles <= 1) throw new ArgumentException("Must be > 1", nameof(numberOfPiles));
+			if (numberOfPiles > Size) throw new ArgumentException("Must be <= current stack size", nameof(numberOfPiles));
 
 			var groups = new List<CardGroup>();
-			int chunkPoint = Size / pNumberOfPiles;
-			int remainder = Size % pNumberOfPiles;
+			int chunkPoint = Size / numberOfPiles;
+			int remainder = Size % numberOfPiles;
 			int basePoint = 0;
 
-			int lastSequence = pNumberOfPiles - 1;
-			for (int i = 0; i < pNumberOfPiles; i++) {
+			int lastSequence = numberOfPiles - 1;
+			for (int i = 0; i < numberOfPiles; i++) {
 				if (i == lastSequence) {
 					groups.Add(new CardGroup(mCards.Skip(basePoint)));
 				}
@@ -234,11 +234,11 @@ namespace BoringCardLib {
 			return Split(Size / 2);
 		}
 
-		public SplitResult Split(int pSplitPoint) {
-			if (pSplitPoint <= 0) throw new ArgumentException("Must be > 0", nameof(pSplitPoint));
+		public SplitResult Split(int splitPoint) {
+			if (splitPoint <= 0) throw new ArgumentException("Must be > 0", nameof(splitPoint));
 			return new SplitResult(
-				new CardGroup(mCards.Take(pSplitPoint).ToArray()),
-				new CardGroup(mCards.Skip(pSplitPoint).ToArray()));
+				new CardGroup(mCards.Take(splitPoint).ToArray()),
+				new CardGroup(mCards.Skip(splitPoint).ToArray()));
 		}
 
 		public IEnumerator<Card> GetEnumerator() {

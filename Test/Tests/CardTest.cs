@@ -13,12 +13,12 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => new Card(Suit.Joker, Rank.Two));
 			Assert.DoesNotThrow(() => new Card(Suit.Joker, Rank.Joker));
 			Assert.DoesNotThrow(() => new Card(Suit.Diamonds, Rank.Two));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: null));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: 0));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: -1));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: 1));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: int.MaxValue));
-			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pPointValue: int.MinValue));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: null));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: 0));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: -1));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: 1));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: int.MaxValue));
+			Assert.DoesNotThrow(() => new Card(Suit.Spades, Rank.Ace, pointValue: int.MinValue));
 		}
 
 		[TestMethod]

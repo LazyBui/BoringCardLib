@@ -253,7 +253,7 @@ namespace Test {
 			deck = CardGroup.MakeStandardDeck();
 			bottom = deck.Bottom;
 			discard = deck.Discard(
-				new DiscardRequest(pDirection: Direction.FromBottom, pQuantity: 1));
+				new DiscardRequest(direction: Direction.FromBottom, quantity: 1));
 			Assert.True(discard.Size == 1);
 			Assert.True(deck.Size == 51);
 			Assert.Equal(bottom, discard.Top);
@@ -261,14 +261,14 @@ namespace Test {
 			deck = CardGroup.MakeStandardDeck();
 			top = deck.Top;
 			discard = deck.Discard(
-				new DiscardRequest(pDirection: Direction.FromTop, pQuantity: 1));
+				new DiscardRequest(direction: Direction.FromTop, quantity: 1));
 			Assert.True(discard.Size == 1);
 			Assert.True(deck.Size == 51);
 			Assert.Equal(top, discard.Top);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pSuit: Suit.Clubs));
+				new DiscardRequest(suit: Suit.Clubs));
 			Assert.True(discard.Size == 13);
 			Assert.True(deck.Size == 52 - 13);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
@@ -276,7 +276,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pSuit: Suit.Clubs, pQuantity: 3));
+				new DiscardRequest(suit: Suit.Clubs, quantity: 3));
 			Assert.True(discard.Size == 3);
 			Assert.True(deck.Size == 52 - 3);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
@@ -284,7 +284,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pRank: Rank.Ace));
+				new DiscardRequest(rank: Rank.Ace));
 			Assert.True(discard.Size == 4);
 			Assert.True(deck.Size == 52 - 4);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
@@ -292,7 +292,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pRank: Rank.Ace, pQuantity: 3));
+				new DiscardRequest(rank: Rank.Ace, quantity: 3));
 			Assert.True(discard.Size == 3);
 			Assert.True(deck.Size == 52 - 3);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
@@ -300,13 +300,13 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pQuantity: 100));
+				new DiscardRequest(quantity: 100));
 			Assert.True(discard.Size == 52);
 			Assert.True(deck.Size == 0);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pSuits: new[] { Suit.Spades, Suit.Clubs }));
+				new DiscardRequest(suits: new[] { Suit.Spades, Suit.Clubs }));
 			Assert.True(discard.Size == 26);
 			Assert.True(deck.Size == 26);
 			Assert.All(discard, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
@@ -314,7 +314,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pSuits: new[] { Suit.Spades, Suit.Clubs }, pQuantity: 6));
+				new DiscardRequest(suits: new[] { Suit.Spades, Suit.Clubs }, quantity: 6));
 			Assert.True(discard.Size == 6);
 			Assert.True(deck.Size == 52 - 6);
 			Assert.All(discard, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
@@ -322,7 +322,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pRanks: new[] { Rank.Two, Rank.Three }));
+				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }));
 			Assert.True(discard.Size == 8);
 			Assert.True(deck.Size == 52 - 8);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
@@ -330,7 +330,7 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
-				new DiscardRequest(pRanks: new[] { Rank.Two, Rank.Three }, pQuantity: 6));
+				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }, quantity: 6));
 			Assert.True(discard.Size == 6);
 			Assert.True(deck.Size == 52 - 6);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);

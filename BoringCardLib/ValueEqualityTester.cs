@@ -10,30 +10,30 @@ namespace BoringCardLib {
 
 		private static Type sCollectionType = typeof(ICollection);
 		private static Type sCollectionGenericType = typeof(ICollection<>);
-		private static bool IsCollectionType(Type pType) { return sCollectionType.IsAssignableFrom(pType) || sCollectionGenericType.IsAssignableFrom(pType); }
+		private static bool IsCollectionType(Type type) { return sCollectionType.IsAssignableFrom(type) || sCollectionGenericType.IsAssignableFrom(type); }
 
-		public ValueEqualityTester Equal(object pLeftSide, object pRightSide) {
-			if (AnyUnequal || object.ReferenceEquals(pLeftSide, pRightSide)) return this;
+		public ValueEqualityTester Equal(object left, object right) {
+			if (AnyUnequal || object.ReferenceEquals(left, right)) return this;
 
-			if (pLeftSide == null || pRightSide == null) return this.Equal(false);
+			if (left == null || right == null) return Equal(false);
 
-			Type left = pLeftSide.GetType();
-			Type right = pRightSide.GetType();
-			bool isCollectionType = IsCollectionType(left);
+			Type leftType = left.GetType();
+			Type rightType = right.GetType();
+			bool isCollectionType = IsCollectionType(leftType);
 			// If only one is a collection, it's obvious that they're unequal
-			if (isCollectionType != IsCollectionType(right)) return this.Equal(false);
+			if (isCollectionType != IsCollectionType(rightType)) return Equal(false);
 
 			if (isCollectionType) {
-				if (left != right) {
+				if (leftType != rightType) {
 					// This is a complicated subject, but we'll say that if the collection types are not equal, they are not value-equal
 					// So for example, a List<int> and an int[] won't be equal even if they both have 1, 2, 3
 					// I think this is okay
-					return this.Equal(false);
+					return Equal(false);
 				}
 
-				var leftCollection = (pLeftSide as ICollection);
-				var rightCollection = (pRightSide as ICollection);
-				if (leftCollection.Count != rightCollection.Count) return this.Equal(false);
+				var leftCollection = left as ICollection;
+				var rightCollection = right as ICollection;
+				if (leftCollection.Count != rightCollection.Count) return Equal(false);
 
 				var leftIter = leftCollection.GetEnumerator();
 				var rightIter = rightCollection.GetEnumerator();
@@ -43,26 +43,26 @@ namespace BoringCardLib {
 				}
 			}
 			else {
-				var equalityChecker = pLeftSide as IComparable;
+				var equalityChecker = left as IComparable;
 				if (equalityChecker != null) {
-					if (equalityChecker.CompareTo(pRightSide) != 0) return this.Equal(false);
+					if (equalityChecker.CompareTo(right) != 0) return Equal(false);
 				}
-				else if (!pLeftSide.Equals(pRightSide)) return this.Equal(false);
+				else if (!left.Equals(right)) return Equal(false);
 			}
 			return this;
 		}
 
-		public ValueEqualityTester Equal<TElement>(TElement pLeftSide, TElement pRightSide, IEqualityComparer<TElement> pComparer) {
-			if (AnyUnequal || object.ReferenceEquals(pLeftSide, pRightSide)) return this;
+		public ValueEqualityTester Equal<TElement>(TElement left, TElement right, IEqualityComparer<TElement> comparer) {
+			if (AnyUnequal || object.ReferenceEquals(left, right)) return this;
 
-			if (pLeftSide == null || pRightSide == null) return this.Equal(false);
-			if (pComparer.GetHashCode(pLeftSide) != pComparer.GetHashCode(pRightSide)) return this.Equal(false);
-			if (!pComparer.Equals(pLeftSide, pRightSide)) return this.Equal(false);
+			if (left == null || right == null) return Equal(false);
+			if (comparer.GetHashCode(left) != comparer.GetHashCode(right)) return Equal(false);
+			if (!comparer.Equals(left, right)) return Equal(false);
 			return this;
 		}
 
-		public ValueEqualityTester Equal(bool pEqual) {
-			if (pEqual) return this;
+		public ValueEqualityTester Equal(bool isEqual) {
+			if (isEqual) return this;
 			AnyUnequal = true;
 			return this;
 		}

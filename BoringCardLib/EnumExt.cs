@@ -18,10 +18,10 @@ namespace BoringCardLib {
 	}
 
 	internal static class EnumExt {
-		public static void ThrowIfInvalid(this Enum pValue, string pName = null) {
-			if (pValue == null) return;
-			if (!Enum.IsDefined(pValue.GetType(), pValue)) {
-				throw new ArgumentException("Must have a valid value", pName);
+		public static void ThrowIfInvalid(this Enum @this, string name = null) {
+			if (@this == null) return;
+			if (!Enum.IsDefined(@this.GetType(), @this)) {
+				throw new ArgumentException("Must have a valid value", name);
 			}
 		}
 	}

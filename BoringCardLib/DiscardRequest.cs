@@ -10,45 +10,45 @@ namespace BoringCardLib {
 		public Direction Direction { get; private set; }
 
 		public DiscardRequest(
-			Direction pDirection = Direction.FromTop,
-			int? pQuantity = null,
-			Suit? pSuit = null,
-			IEnumerable<Suit> pSuits = null,
-			Rank? pRank = null,
-			IEnumerable<Rank> pRanks = null)
+			Direction direction = Direction.FromTop,
+			int? quantity = null,
+			Suit? suit = null,
+			IEnumerable<Suit> suits = null,
+			Rank? rank = null,
+			IEnumerable<Rank> ranks = null)
 		{
-			pDirection.ThrowIfInvalid(nameof(pDirection));
-			if (pQuantity != null) {
-				if (pQuantity <= 0) throw new ArgumentException("Must be > 0", nameof(pQuantity));
+			direction.ThrowIfInvalid(nameof(direction));
+			if (quantity != null) {
+				if (quantity <= 0) throw new ArgumentException("Must be > 0", nameof(quantity));
 			}
-			if (pSuits != null) {
-				if (pSuits.Count() == 0) throw new ArgumentException("Must have elements", nameof(pSuits));
-				if (pSuit != null) throw new ArgumentException($"Must not specify both {nameof(pSuit)} and {nameof(pSuits)}");
-				foreach (var suit in pSuits) {
-					suit.ThrowIfInvalid(nameof(pSuits));
+			if (suits != null) {
+				if (suits.Count() == 0) throw new ArgumentException("Must have elements", nameof(suits));
+				if (suit != null) throw new ArgumentException($"Must not specify both {nameof(suit)} and {nameof(suits)}");
+				foreach (var s in suits) {
+					s.ThrowIfInvalid(nameof(suits));
 				}
 			}
-			if (pRanks != null) {
-				if (pRanks.Count() == 0) throw new ArgumentException("Must have elements", nameof(pRanks));
-				if (pRank != null) throw new ArgumentException($"Must not specify both {nameof(pRank)} and {nameof(pRanks)}");
-				foreach (var rank in pRanks) {
-					rank.ThrowIfInvalid(nameof(pRanks));
+			if (ranks != null) {
+				if (ranks.Count() == 0) throw new ArgumentException("Must have elements", nameof(ranks));
+				if (rank != null) throw new ArgumentException($"Must not specify both {nameof(rank)} and {nameof(ranks)}");
+				foreach (var r in ranks) {
+					r.ThrowIfInvalid(nameof(ranks));
 				}
 			}
-			pSuit.ThrowIfInvalid(nameof(pSuit));
-			pRank.ThrowIfInvalid(nameof(pRank));
+			suit.ThrowIfInvalid(nameof(suit));
+			rank.ThrowIfInvalid(nameof(rank));
 
-			if (pQuantity == null && pSuit == null && pRank == null && pSuits == null && pRanks == null) {
+			if (quantity == null && suit == null && rank == null && suits == null && ranks == null) {
 				throw new ArgumentException("Must have at least one discard criterion");
 			}
 
-			Direction = pDirection;
-			Quantity = pQuantity;
-			if (pSuits != null) Suits = pSuits;
-			else if (pSuit != null) Suits = new[] { pSuit.GetValueOrDefault() };
+			Direction = direction;
+			Quantity = quantity;
+			if (suits != null) Suits = suits;
+			else if (suit != null) Suits = new[] { suit.GetValueOrDefault() };
 			else Suits = new Suit[0];
-			if (pRanks != null) Ranks = pRanks;
-			else if (pRank != null) Ranks = new[] { pRank.GetValueOrDefault() };
+			if (ranks != null) Ranks = ranks;
+			else if (rank != null) Ranks = new[] { rank.GetValueOrDefault() };
 			else Ranks = new Rank[0];
 		}
 	}
