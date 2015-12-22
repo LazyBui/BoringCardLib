@@ -206,25 +206,73 @@ namespace BoringCardLib {
 			return new CardGroup(result);
 		}
 
-		public IEnumerable<CardGroup> Distribute(int numberOfPiles) {
+		public IEnumerable<CardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
 			if (numberOfPiles <= 1) throw new ArgumentException("Must be > 1", nameof(numberOfPiles));
 			if (numberOfPiles > Size) throw new ArgumentException("Must be <= current stack size", nameof(numberOfPiles));
+			distributionPolicy.ThrowIfInvalid(nameof(distributionPolicy));
+			remainderPolicy.ThrowIfInvalid(nameof(remainderPolicy));
 
-			var groups = new List<CardGroup>();
-			int chunkPoint = Size / numberOfPiles;
+			var groups = new List<CardGroup>(numberOfPiles + 1);
 			int remainder = Size % numberOfPiles;
-			int basePoint = 0;
 
-			int lastSequence = numberOfPiles - 1;
-			for (int i = 0; i < numberOfPiles; i++) {
-				if (i == lastSequence) {
-					groups.Add(new CardGroup(mCards.Skip(basePoint)));
-				}
-				else {
-					int add = i < remainder ? 1 : 0;
-					groups.Add(new CardGroup(mCards.Skip(basePoint).Take(chunkPoint + add)));
-					basePoint += chunkPoint + add;
-				}
+			switch (distributionPolicy) {
+				case DistributionPolicy.Alternating:
+					for (int i = 0; i < numberOfPiles; i++) {
+						groups.Add(new CardGroup());
+					}
+					if (remainder != 0 && remainderPolicy == RemainderPolicy.SeparatePile) {
+						groups.Add(new CardGroup());
+					}
+
+					int maxCards = Size - remainder;
+					for (int i = 0; i < Size; i++) {
+						int group = i % numberOfPiles;
+						if (i >= maxCards) {
+							bool done = false;
+							switch (remainderPolicy) {
+								case RemainderPolicy.Distribute: groups[group].Append(mCards[i]); break;
+								case RemainderPolicy.NoRemainder: done = true; break;
+								case RemainderPolicy.SeparatePile: groups[numberOfPiles].Append(mCards[i]); break;
+								default: throw new NotImplementedException();
+							}
+							if (done) break;
+						}
+						else {
+							groups[group].Append(mCards[i]);
+						}
+					}
+					break;
+				case DistributionPolicy.Heap:
+					int chunkPoint = Size / numberOfPiles;
+					int basePoint = 0;
+					switch (remainderPolicy) {
+						case RemainderPolicy.Distribute:
+							int lastSequence = numberOfPiles - 1;
+							for (int i = 0; i < numberOfPiles; i++) {
+								if (i == lastSequence) {
+									groups.Add(new CardGroup(mCards.Skip(basePoint)));
+								}
+								else {
+									int add = i < remainder ? 1 : 0;
+									groups.Add(new CardGroup(mCards.Skip(basePoint).Take(chunkPoint + add)));
+									basePoint += chunkPoint + add;
+								}
+							}
+							break;
+						case RemainderPolicy.SeparatePile:
+						case RemainderPolicy.NoRemainder:
+							for (int i = 0; i < numberOfPiles; i++) {
+								groups.Add(new CardGroup(mCards.Skip(basePoint).Take(chunkPoint)));
+								basePoint += chunkPoint;
+							}
+							if (remainder != 0 && remainderPolicy != RemainderPolicy.NoRemainder) {
+								groups.Add(new CardGroup(mCards.Skip(basePoint)));
+							}
+							break;
+						default: throw new NotImplementedException();
+					}
+					break;
+				default: throw new NotImplementedException();
 			}
 
 			return groups.AsReadOnly();

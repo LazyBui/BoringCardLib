@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
+    <Compile Include="DistributionPolicy.cs" />
+    <Compile Include="RemainderPolicy.cs" />
     <Compile Include="SplitResult.cs" />
     <Compile Include="CardGroup.cs" />
     <Compile Include="DiscardRequest.cs" />
