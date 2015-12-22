@@ -95,6 +95,30 @@ namespace Test {
 			verifySuit(Suit.Hearts);
 			verifySuit(Suit.Spades);
 			Assert.True(deck.Count(v => v.Suit == Suit.Joker && v.Rank == Rank.Joker) == 2);
+
+			deck = CardGroup.MakeStandardDeck(initializeValues: c => {
+				switch (c.Rank) {
+					case Rank.Ace: return c.WithValue(1);
+					case Rank.Two: return c.WithValue(2);
+					case Rank.Three: return c.WithValue(3);
+					case Rank.Four: return c.WithValue(4);
+					case Rank.Five: return c.WithValue(5);
+					case Rank.Six: return c.WithValue(6);
+					case Rank.Seven: return c.WithValue(7);
+					case Rank.Eight: return c.WithValue(8);
+					case Rank.Nine: return c.WithValue(9);
+					case Rank.Ten: return c.WithValue(10);
+					case Rank.Jack: return c.WithValue(11);
+					case Rank.Queen: return c.WithValue(12);
+					case Rank.King: return c.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			Assert.True(deck.Size == 52);
+			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
+			for (int i = 0; i < 13; i++) {
+				Assert.True(deck.Count(c => c.Value == (i + 1)) == 4);
+			}
 		}
 
 		[TestMethod]
@@ -120,6 +144,30 @@ namespace Test {
 			Assert.True(ranks.All(r => deck.Any(v => v.Rank == r)));
 
 			Assert.ThrowsExact<ArgumentException>(() => deck = CardGroup.MakeFullSuit((Suit)(-1)));
+
+			deck = CardGroup.MakeFullSuit(Suit.Spades, initializeValues: c => {
+				switch (c.Rank) {
+					case Rank.Ace: return c.WithValue(1);
+					case Rank.Two: return c.WithValue(2);
+					case Rank.Three: return c.WithValue(3);
+					case Rank.Four: return c.WithValue(4);
+					case Rank.Five: return c.WithValue(5);
+					case Rank.Six: return c.WithValue(6);
+					case Rank.Seven: return c.WithValue(7);
+					case Rank.Eight: return c.WithValue(8);
+					case Rank.Nine: return c.WithValue(9);
+					case Rank.Ten: return c.WithValue(10);
+					case Rank.Jack: return c.WithValue(11);
+					case Rank.Queen: return c.WithValue(12);
+					case Rank.King: return c.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			Assert.True(deck.Size == 13);
+			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
+			for (int i = 0; i < 13; i++) {
+				Assert.True(deck.Count(c => c.Value == (i + 1)) == 1);
+			}
 		}
 
 		[TestMethod]
@@ -395,6 +443,11 @@ namespace Test {
 			Assert.True(deck.Size == 52 - 6);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 			Assert.Exactly(deck, 8 - 6, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
+
+			deck = CardGroup.MakeStandardDeck();
+			discard = deck.Discard();
+			Assert.True(discard.Size == 52);
+			Assert.True(deck.Size == 0);
 		}
 	}
 }

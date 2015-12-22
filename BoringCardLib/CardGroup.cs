@@ -28,29 +28,31 @@ namespace BoringCardLib {
 			mCards.AddRange(cards);
 		}
 
-		public static CardGroup MakeStandardDeck(bool includeJokers = false) {
+		public static CardGroup MakeStandardDeck(bool includeJokers = false, Func<Card, Card> initializeValues = null) {
 			var cards = new List<Card>();
 			foreach (var suit in EnumExt<Suit>.GetValues()) {
 				if (suit == Suit.Joker) continue;
-				cards.AddRange(MakeFullSuit(suit));
+				cards.AddRange(MakeFullSuit(suit, initializeValues: initializeValues));
 			}
 			if (includeJokers) {
+				if (initializeValues == null) initializeValues = c => c;
 				cards.AddRange(new[] {
-					new Card(Suit.Joker, Rank.Joker),
-					new Card(Suit.Joker, Rank.Joker),
+					initializeValues(new Card(Suit.Joker, Rank.Joker)),
+					initializeValues(new Card(Suit.Joker, Rank.Joker)),
 				});
 			}
 			return new CardGroup(cards);
 		}
 
-		public static CardGroup MakeFullSuit(Suit suit) {
+		public static CardGroup MakeFullSuit(Suit suit, Func<Card, Card> initializeValues = null) {
 			suit.ThrowIfInvalid(nameof(suit));
 			if (suit == Suit.Joker) throw new ArgumentException("Must not be a joker", nameof(suit));
+			if (initializeValues == null) initializeValues = c => c;
 
 			var cards = new List<Card>();
 			foreach (var rank in EnumExt<Rank>.GetValues()) {
 				if (rank == Rank.Joker) continue;
-				cards.Add(new Card(suit, rank));
+				cards.Add(initializeValues(new Card(suit, rank)));
 			}
 			return new CardGroup(cards);
 		}
@@ -142,6 +144,10 @@ namespace BoringCardLib {
 				}
 			}
 			return result;
+		}
+
+		public CardGroup Discard() {
+			return Discard(new DiscardRequest(quantity: Size));
 		}
 
 		public CardGroup Discard(DiscardRequest request) {
