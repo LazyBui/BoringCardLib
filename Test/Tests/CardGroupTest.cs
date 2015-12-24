@@ -449,5 +449,19 @@ namespace Test {
 			Assert.True(discard.Size == 52);
 			Assert.True(deck.Size == 0);
 		}
+
+		[TestMethod]
+		public void Duplicate() {
+			var deck = CardGroup.MakeStandardDeck();
+			Assert.DoesNotThrow(() => deck.Duplicate());
+			var duped = deck.Duplicate();
+			Assert.True(deck.Draw() == duped.Draw());
+			Assert.True(deck.Draw() == duped.Draw());
+			Assert.True(deck.Draw() == duped.Draw());
+			duped = deck.Duplicate();
+			Assert.True(deck.Draw() == duped.Draw());
+			Assert.True(deck.Draw() == duped.Draw());
+			Assert.True(deck.Draw() == duped.Draw());
+		}
 	}
 }

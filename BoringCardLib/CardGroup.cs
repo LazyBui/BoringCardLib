@@ -295,6 +295,14 @@ namespace BoringCardLib {
 				new CardGroup(mCards.Skip(splitPoint).ToArray()));
 		}
 
+		public CardGroup Duplicate() {
+			return new CardGroup(mCards.ToArray());
+		}
+
+		public ImmutableCardGroup AsImmutable() {
+			return new ImmutableCardGroup(mCards.ToArray());
+		}
+
 		public IEnumerator<Card> GetEnumerator() {
 			return mCards.GetEnumerator();
 		}

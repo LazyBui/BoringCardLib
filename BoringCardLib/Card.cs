@@ -20,6 +20,10 @@ namespace BoringCardLib {
 			return new Card(Suit, Rank, newValue);
 		}
 
+		public Card Duplicate() {
+			return new Card(Suit, Rank, pointValue: Value);
+		}
+
 		public override int GetHashCode() {
 			return new Hasher().
 				Combine(Suit).
