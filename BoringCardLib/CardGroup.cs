@@ -147,7 +147,13 @@ namespace BoringCardLib {
 		}
 
 		public CardGroup Discard() {
-			return Discard(new DiscardRequest(quantity: Size));
+			return Discard(Size);
+		}
+
+		public CardGroup Discard(int quantity, Direction direction = Direction.FromTop) {
+			if (quantity <= 0) throw new ArgumentException("Must be > 0", nameof(quantity));
+			direction.ThrowIfInvalid(nameof(direction));
+			return Discard(new DiscardRequest(direction: direction, quantity: quantity));
 		}
 
 		public CardGroup Discard(DiscardRequest request) {
@@ -293,6 +299,10 @@ namespace BoringCardLib {
 			return new SplitResult(
 				new CardGroup(mCards.Take(splitPoint).ToArray()),
 				new CardGroup(mCards.Skip(splitPoint).ToArray()));
+		}
+
+		public CardGroup Reverse() {
+			return new CardGroup(mCards.Reverse<Card>().ToArray());
 		}
 
 		public CardGroup Duplicate() {

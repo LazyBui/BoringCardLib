@@ -30,6 +30,10 @@ namespace BoringCardLib {
 			return mCards.Split(splitPoint);
 		}
 
+		public ImmutableCardGroup Reverse() {
+			return new ImmutableCardGroup(mCards.Reverse<Card>().ToArray());
+		}
+
 		public ImmutableCardGroup Duplicate() {
 			return new ImmutableCardGroup(mCards.ToArray());
 		}

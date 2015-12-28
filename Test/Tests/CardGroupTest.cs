@@ -352,7 +352,14 @@ namespace Test {
 
 			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as Card));
 			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as DiscardRequest));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(-1));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(0));
+			Assert.DoesNotThrow(() => deck.Discard(1));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(1, (Direction)(-1)));
+			Assert.DoesNotThrow(() => deck.Discard());
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard());
 
+			deck = CardGroup.MakeStandardDeck();
 			bottom = deck.Bottom;
 			Assert.True(deck.Discard(bottom) == CardStackOperation.Performed);
 			Assert.True(deck.Size == 51);
@@ -448,6 +455,18 @@ namespace Test {
 			discard = deck.Discard();
 			Assert.True(discard.Size == 52);
 			Assert.True(deck.Size == 0);
+		}
+
+		[TestMethod]
+		public void Reverse() {
+			var deck = new CardGroup();
+			Assert.DoesNotThrow(() => deck.Reverse());
+			deck = CardGroup.MakeStandardDeck();
+			Assert.DoesNotThrow(() => deck.Reverse());
+
+			var deck2 = deck.Reverse();
+			Assert.True(deck.Top == deck2.Bottom);
+			Assert.True(deck.Bottom == deck2.Top);
 		}
 
 		[TestMethod]
