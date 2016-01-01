@@ -7,7 +7,7 @@ namespace BoringCardLib {
 	public sealed class ImmutableCardGroup : IEnumerable<Card> {
 		private CardGroup mCards = null;
 
-		public int Size { get { return mCards.Size; } }
+		public int Count { get { return mCards.Count; } }
 		public Card Top { get { return mCards.Top; } }
 		public Card Bottom { get { return mCards.Bottom; } }
 
@@ -48,6 +48,29 @@ namespace BoringCardLib {
 
 		IEnumerator IEnumerable.GetEnumerator() {
 			return mCards.GetEnumerator();
+		}
+
+		public static ImmutableCardGroup Shuffle(ImmutableCardGroup group, int times = 1) {
+			return Shuffle(new DefaultRandomSource(), group, times: times);
+		}
+
+		public static ImmutableCardGroup Shuffle(IRandomSource sampler, ImmutableCardGroup group, int times = 1) {
+			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
+			if (group == null) throw new ArgumentNullException(nameof(group));
+			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
+
+			int n = group.Count;
+			Card[] cards = group.ToArray();
+			do {
+				for (int i = 0; i < n; i++) {
+					var temp = cards[i];
+					int r = i + sampler.SampleInt32(n - i);
+					cards[i] = cards[r];
+					cards[r] = temp;
+				}
+			} while (--times > 0);
+
+			return new ImmutableCardGroup(cards);
 		}
 	}
 }

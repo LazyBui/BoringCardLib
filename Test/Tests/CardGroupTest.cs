@@ -46,7 +46,7 @@ namespace Test {
 				if (elem == 0) {
 					Assert.Equal(top, card);
 				}
-				else if (elem == deck.Size) {
+				else if (elem == deck.Count) {
 					Assert.Equal(bottom, card);
 				}
 				elem++;
@@ -60,7 +60,7 @@ namespace Test {
 		[TestMethod]
 		public void MakeStandardDeck() {
 			var deck = CardGroup.MakeStandardDeck();
-			Assert.True(deck.Size == 52);
+			Assert.True(deck.Count == 52);
 
 			var ranks = new[] {
 				Rank.Two,
@@ -88,7 +88,7 @@ namespace Test {
 			verifySuit(Suit.Spades);
 
 			deck = CardGroup.MakeStandardDeck(true);
-			Assert.True(deck.Size == 54);
+			Assert.True(deck.Count == 54);
 
 			verifySuit(Suit.Clubs);
 			verifySuit(Suit.Diamonds);
@@ -114,7 +114,7 @@ namespace Test {
 					default: throw new NotImplementedException();
 				}
 			});
-			Assert.True(deck.Size == 52);
+			Assert.True(deck.Count == 52);
 			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
 			for (int i = 0; i < 13; i++) {
 				Assert.True(deck.Count(c => c.Value == (i + 1)) == 4);
@@ -124,7 +124,7 @@ namespace Test {
 		[TestMethod]
 		public void MakeFullSuit() {
 			var deck = CardGroup.MakeFullSuit(Suit.Spades);
-			Assert.True(deck.Size == 13);
+			Assert.True(deck.Count == 13);
 			Assert.All(deck, v => v.Suit == Suit.Spades);
 			var ranks = new[] {
 				Rank.Two,
@@ -163,7 +163,7 @@ namespace Test {
 					default: throw new NotImplementedException();
 				}
 			});
-			Assert.True(deck.Size == 13);
+			Assert.True(deck.Count == 13);
 			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
 			for (int i = 0; i < 13; i++) {
 				Assert.True(deck.Count(c => c.Value == (i + 1)) == 1);
@@ -173,21 +173,21 @@ namespace Test {
 		[TestMethod]
 		public void Draw() {
 			var deck = CardGroup.MakeStandardDeck();
-			int max = deck.Size;
+			int max = deck.Count;
 			for (int i = 0; i < max; i++) {
 				Card top = deck.Top;
 				Card draw = deck.Draw();
 				Assert.Equal(top, draw);
 			}
-			Assert.True(deck.Size == 0);
+			Assert.True(deck.Count == 0);
 
 			deck = CardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Draw(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Draw(0));
 			CardGroup drawn = deck.Draw(5);
 
-			Assert.True(deck.Size == 52 - 5);
-			Assert.True(drawn.Size == 5);
+			Assert.True(deck.Count == 52 - 5);
+			Assert.True(drawn.Count == 5);
 			Assert.None(drawn, v => deck.Contains(v));
 			Assert.None(deck, v => drawn.Contains(v));
 		}
@@ -218,10 +218,11 @@ namespace Test {
 		[TestMethod]
 		public void Shuffle() {
 			var deck = CardGroup.MakeStandardDeck();
-			Assert.Throws<ArgumentException>(() => deck.Shuffle(-1));
-			Assert.Throws<ArgumentException>(() => deck.Shuffle(0));
-			var ordered = new CardGroup(deck);
-			deck.Shuffle();
+			Assert.Throws<ArgumentException>(() => CardGroup.Shuffle(deck, -1));
+			Assert.Throws<ArgumentException>(() => CardGroup.Shuffle(deck, 0));
+			Assert.Throws<ArgumentNullException>(() => CardGroup.Shuffle(null as CardGroup));
+			Assert.Throws<ArgumentNullException>(() => CardGroup.Shuffle(null, deck));
+			var ordered = CardGroup.Shuffle(deck);
 			Assert.NotEqual(deck, ordered);
 		}
 
@@ -231,8 +232,8 @@ namespace Test {
 			var split = deck.Split();
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);
-			Assert.True(split.Top.Size == 26);
-			Assert.True(split.Bottom.Size == 26);
+			Assert.True(split.Top.Count == 26);
+			Assert.True(split.Bottom.Count == 26);
 
 			deck = CardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
@@ -240,8 +241,8 @@ namespace Test {
 			split = deck.Split(13);
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);
-			Assert.True(split.Top.Size == 13);
-			Assert.True(split.Bottom.Size == 39);
+			Assert.True(split.Top.Count == 13);
+			Assert.True(split.Bottom.Count == 39);
 		}
 
 		[TestMethod]
@@ -290,57 +291,57 @@ namespace Test {
 			// Test remainder distribution
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 2);
-			Assert.True(split[0].Size == 26);
-			Assert.True(split[1].Size == 26);
+			Assert.True(split[0].Count == 26);
+			Assert.True(split[1].Count == 26);
 			
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 2);
-			Assert.True(split[0].Size == 26);
-			Assert.True(split[1].Size == 26);
+			Assert.True(split[0].Count == 26);
+			Assert.True(split[1].Count == 26);
 
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 2);
-			Assert.True(split[0].Size == 26);
-			Assert.True(split[1].Size == 26);
+			Assert.True(split[0].Count == 26);
+			Assert.True(split[1].Count == 26);
 
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 3);
-			Assert.True(split[0].Size == 18);
-			Assert.True(split[1].Size == 17);
-			Assert.True(split[2].Size == 17);
+			Assert.True(split[0].Count == 18);
+			Assert.True(split[1].Count == 17);
+			Assert.True(split[2].Count == 17);
 
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 4);
-			Assert.True(split[0].Size == 17);
-			Assert.True(split[1].Size == 17);
-			Assert.True(split[2].Size == 17);
-			Assert.True(split[3].Size == 1);
+			Assert.True(split[0].Count == 17);
+			Assert.True(split[1].Count == 17);
+			Assert.True(split[2].Count == 17);
+			Assert.True(split[3].Count == 1);
 
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 3);
-			Assert.True(split[0].Size == 17);
-			Assert.True(split[1].Size == 17);
-			Assert.True(split[2].Size == 17);
+			Assert.True(split[0].Count == 17);
+			Assert.True(split[1].Count == 17);
+			Assert.True(split[2].Count == 17);
 
 			deck.Draw(2);
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 3);
-			Assert.True(split[0].Size == 17);
-			Assert.True(split[1].Size == 17);
-			Assert.True(split[2].Size == 16);
+			Assert.True(split[0].Count == 17);
+			Assert.True(split[1].Count == 17);
+			Assert.True(split[2].Count == 16);
 
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 4);
-			Assert.True(split[0].Size == 16);
-			Assert.True(split[1].Size == 16);
-			Assert.True(split[2].Size == 16);
-			Assert.True(split[3].Size == 2);
+			Assert.True(split[0].Count == 16);
+			Assert.True(split[1].Count == 16);
+			Assert.True(split[2].Count == 16);
+			Assert.True(split[3].Count == 2);
 
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 3);
-			Assert.True(split[0].Size == 16);
-			Assert.True(split[1].Size == 16);
-			Assert.True(split[2].Size == 16);
+			Assert.True(split[0].Count == 16);
+			Assert.True(split[1].Count == 16);
+			Assert.True(split[2].Count == 16);
 		}
 
 		[TestMethod]
@@ -362,99 +363,99 @@ namespace Test {
 			deck = CardGroup.MakeStandardDeck();
 			bottom = deck.Bottom;
 			Assert.True(deck.Discard(bottom) == CardStackOperation.Performed);
-			Assert.True(deck.Size == 51);
+			Assert.True(deck.Count == 51);
 			Assert.True(deck.Discard(bottom) == CardStackOperation.CardNotPresent);
 
 			deck = CardGroup.MakeStandardDeck();
 			bottom = deck.Bottom;
 			discard = deck.Discard(
 				new DiscardRequest(direction: Direction.FromBottom, quantity: 1));
-			Assert.True(discard.Size == 1);
-			Assert.True(deck.Size == 51);
+			Assert.True(discard.Count == 1);
+			Assert.True(deck.Count == 51);
 			Assert.Equal(bottom, discard.Top);
 
 			deck = CardGroup.MakeStandardDeck();
 			top = deck.Top;
 			discard = deck.Discard(
 				new DiscardRequest(direction: Direction.FromTop, quantity: 1));
-			Assert.True(discard.Size == 1);
-			Assert.True(deck.Size == 51);
+			Assert.True(discard.Count == 1);
+			Assert.True(deck.Count == 51);
 			Assert.Equal(top, discard.Top);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(suit: Suit.Clubs));
-			Assert.True(discard.Size == 13);
-			Assert.True(deck.Size == 52 - 13);
+			Assert.True(discard.Count == 13);
+			Assert.True(deck.Count == 52 - 13);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
 			Assert.All(deck, v => v.Suit != Suit.Clubs);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(suit: Suit.Clubs, quantity: 3));
-			Assert.True(discard.Size == 3);
-			Assert.True(deck.Size == 52 - 3);
+			Assert.True(discard.Count == 3);
+			Assert.True(deck.Count == 52 - 3);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
 			Assert.Exactly(deck, 13 - 3, v => v.Suit == Suit.Clubs);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(rank: Rank.Ace));
-			Assert.True(discard.Size == 4);
-			Assert.True(deck.Size == 52 - 4);
+			Assert.True(discard.Count == 4);
+			Assert.True(deck.Count == 52 - 4);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
 			Assert.All(deck, v => v.Rank != Rank.Ace);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(rank: Rank.Ace, quantity: 3));
-			Assert.True(discard.Size == 3);
-			Assert.True(deck.Size == 52 - 3);
+			Assert.True(discard.Count == 3);
+			Assert.True(deck.Count == 52 - 3);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
 			Assert.Exactly(deck, 1, v => v.Rank == Rank.Ace);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(quantity: 100));
-			Assert.True(discard.Size == 52);
-			Assert.True(deck.Size == 0);
+			Assert.True(discard.Count == 52);
+			Assert.True(deck.Count == 0);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(suits: new[] { Suit.Spades, Suit.Clubs }));
-			Assert.True(discard.Size == 26);
-			Assert.True(deck.Size == 26);
+			Assert.True(discard.Count == 26);
+			Assert.True(deck.Count == 26);
 			Assert.All(discard, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
 			Assert.All(deck, v => v.Suit == Suit.Diamonds || v.Suit == Suit.Hearts);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(suits: new[] { Suit.Spades, Suit.Clubs }, quantity: 6));
-			Assert.True(discard.Size == 6);
-			Assert.True(deck.Size == 52 - 6);
+			Assert.True(discard.Count == 6);
+			Assert.True(deck.Count == 52 - 6);
 			Assert.All(discard, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
 			Assert.Exactly(deck, 26 - 6, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }));
-			Assert.True(discard.Size == 8);
-			Assert.True(deck.Size == 52 - 8);
+			Assert.True(discard.Count == 8);
+			Assert.True(deck.Count == 52 - 8);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 			Assert.None(deck, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }, quantity: 6));
-			Assert.True(discard.Size == 6);
-			Assert.True(deck.Size == 52 - 6);
+			Assert.True(discard.Count == 6);
+			Assert.True(deck.Count == 52 - 6);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 			Assert.Exactly(deck, 8 - 6, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard();
-			Assert.True(discard.Size == 52);
-			Assert.True(deck.Size == 0);
+			Assert.True(discard.Count == 52);
+			Assert.True(deck.Count == 0);
 		}
 
 		[TestMethod]

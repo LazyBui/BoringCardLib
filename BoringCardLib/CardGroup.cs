@@ -7,16 +7,16 @@ namespace BoringCardLib {
 	public sealed class CardGroup : IEnumerable<Card> {
 		private List<Card> mCards = new List<Card>();
 
-		public int Size { get { return mCards.Count; } }
+		public int Count { get { return mCards.Count; } }
 		public Card Top {
 			get {
-				if (Size == 0) throw new InvalidOperationException();
+				if (Count == 0) throw new InvalidOperationException();
 				return mCards[0];
 			}
 		}
 		public Card Bottom {
 			get {
-				if (Size == 0) throw new InvalidOperationException();
+				if (Count == 0) throw new InvalidOperationException();
 				return mCards[mCards.Count - 1];
 			}
 		}
@@ -81,20 +81,6 @@ namespace BoringCardLib {
 			mCards.AddRange(cards.ToList());
 		}
 
-		public void Shuffle(int times = 1) {
-			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
-
-			int n = mCards.Count;
-			do {
-				for (int i = 0; i < n; i++) {
-					var temp = mCards[i];
-					int r = i + Sampler.SampleInt32(n - i);
-					mCards[i] = mCards[r];
-					mCards[r] = temp;
-				}
-			} while (--times > 0);
-		}
-
 		public Card Draw() {
 			if (mCards.Count == 0) throw new InvalidOperationException();
 			var result = mCards[0];
@@ -104,7 +90,7 @@ namespace BoringCardLib {
 
 		public CardGroup Draw(int cards) {
 			if (cards <= 0) throw new ArgumentException("Must be > 0", nameof(cards));
-			if (cards >= Size) {
+			if (cards >= Count) {
 				var pile = new CardGroup(mCards);
 				mCards.Clear();
 				return pile;
@@ -147,7 +133,7 @@ namespace BoringCardLib {
 		}
 
 		public CardGroup Discard() {
-			return Discard(Size);
+			return Discard(Count);
 		}
 
 		public CardGroup Discard(int quantity, Direction direction = Direction.FromTop) {
@@ -167,7 +153,7 @@ namespace BoringCardLib {
 			var result = new List<Card>();
 
 			if (hasQuantity && !(hasRank || hasSuit)) {
-				if (quantity >= Size) {
+				if (quantity >= Count) {
 					result.AddRange(mCards);
 					mCards.Clear();
 				}
@@ -220,12 +206,12 @@ namespace BoringCardLib {
 
 		public IEnumerable<CardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
 			if (numberOfPiles <= 1) throw new ArgumentException("Must be > 1", nameof(numberOfPiles));
-			if (numberOfPiles > Size) throw new ArgumentException("Must be <= current stack size", nameof(numberOfPiles));
+			if (numberOfPiles > Count) throw new ArgumentException("Must be <= current stack size", nameof(numberOfPiles));
 			distributionPolicy.ThrowIfInvalid(nameof(distributionPolicy));
 			remainderPolicy.ThrowIfInvalid(nameof(remainderPolicy));
 
 			var groups = new List<CardGroup>(numberOfPiles + 1);
-			int remainder = Size % numberOfPiles;
+			int remainder = Count % numberOfPiles;
 
 			switch (distributionPolicy) {
 				case DistributionPolicy.Alternating:
@@ -236,8 +222,8 @@ namespace BoringCardLib {
 						groups.Add(new CardGroup());
 					}
 
-					int maxCards = Size - remainder;
-					for (int i = 0; i < Size; i++) {
+					int maxCards = Count - remainder;
+					for (int i = 0; i < Count; i++) {
 						int group = i % numberOfPiles;
 						if (i >= maxCards) {
 							bool done = false;
@@ -255,7 +241,7 @@ namespace BoringCardLib {
 					}
 					break;
 				case DistributionPolicy.Heap:
-					int chunkPoint = Size / numberOfPiles;
+					int chunkPoint = Count / numberOfPiles;
 					int basePoint = 0;
 					switch (remainderPolicy) {
 						case RemainderPolicy.Distribute:
@@ -291,7 +277,7 @@ namespace BoringCardLib {
 		}
 
 		public SplitResult Split() {
-			return Split(Size / 2);
+			return Split(Count / 2);
 		}
 
 		public SplitResult Split(int splitPoint) {
@@ -319,6 +305,29 @@ namespace BoringCardLib {
 
 		IEnumerator IEnumerable.GetEnumerator() {
 			return mCards.GetEnumerator();
+		}
+
+		public static CardGroup Shuffle(CardGroup group, int times = 1) {
+			return Shuffle(new DefaultRandomSource(), group, times: times);
+		}
+
+		public static CardGroup Shuffle(IRandomSource sampler, CardGroup group, int times = 1) {
+			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
+			if (group == null) throw new ArgumentNullException(nameof(group));
+			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
+
+			int n = group.Count;
+			Card[] cards = group.ToArray();
+			do {
+				for (int i = 0; i < n; i++) {
+					var temp = cards[i];
+					int r = i + sampler.SampleInt32(n - i);
+					cards[i] = cards[r];
+					cards[r] = temp;
+				}
+			} while (--times > 0);
+
+			return new CardGroup(cards);
 		}
 	}
 }

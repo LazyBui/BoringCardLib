@@ -58,9 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
+    <Compile Include="DefaultRandomSource.cs" />
     <Compile Include="ImmutableCardGroup.cs" />
     <Compile Include="DistributionPolicy.cs" />
     <Compile Include="RemainderPolicy.cs" />
+    <Compile Include="IRandomSource.cs" />
     <Compile Include="SplitResult.cs" />
     <Compile Include="CardGroup.cs" />
     <Compile Include="DiscardRequest.cs" />
@@ -72,7 +74,7 @@
     <Compile Include="Rank.cs" />
     <Compile Include="Suit.cs" />
     <Compile Include="EnumExt.cs" />
-    <Compile Include="Sampler.cs" />
+    <Compile Include="SeededRandomSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueEqualityTester.cs" />
   </ItemGroup>

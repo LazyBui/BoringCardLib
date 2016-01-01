@@ -81,7 +81,7 @@
     <Compile Include="Tests\CardGroupTest.cs" />
     <Compile Include="Tests\CardTest.cs" />
     <Compile Include="Tests\HasherTest.cs" />
-    <Compile Include="Tests\SamplerTest.cs" />
+    <Compile Include="Tests\DefaultRandomSourceTest.cs" />
     <Compile Include="Tests\Framework\AssertTest.cs" />
     <Compile Include="Tests\Framework\FileAndDirectoryAssertionsTest.cs" />
     <Compile Include="Tests\Framework\FloatingPointAssertionsTest.cs" />

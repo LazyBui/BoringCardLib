@@ -4,11 +4,8 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace BoringCardLib {
-	internal sealed class Sampler : IDisposable {
-		private static readonly Sampler Instance = new Sampler();
-		private Sampler() { }
-
-		private RNGCryptoServiceProvider mProvider = new RNGCryptoServiceProvider();
+	public sealed class DefaultRandomSource : IDisposable, IRandomSource {
+		private static RNGCryptoServiceProvider mProvider = new RNGCryptoServiceProvider();
 		private const int StateSize = 2000;
 		private byte[] mState = new byte[StateSize];
 		private int mConsumed = StateSize;
@@ -36,16 +33,8 @@ namespace BoringCardLib {
 			return (int)(minimum + (max - minimum) * (SampleInt32Internal() / (double)int.MaxValue));
 		}
 
-		public static IEnumerable<byte> Sample() {
-			return Instance.SampleInternal();
-		}
-
-		public static int SampleInt32() {
-			return Instance.SampleInt32Internal();
-		}
-
-		public static int SampleInt32(int max) {
-			return Instance.SampleInt32Internal(max);
+		public int SampleInt32(int max) {
+			return SampleInt32Internal(max);
 		}
 
 		#region IDisposable Support

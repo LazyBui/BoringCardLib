@@ -4,18 +4,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test {
 	[TestClass]
-	public class SamplerTest {
+	public class DefaultRandomSourceTest {
 		[TestMethod]
 		public void Sample() {
 			Assert.DoesNotThrow(() => {
 				const int iterations = 2000000;
-				for (int i = 0; i < iterations; i++) {
-					int x = Sampler.SampleInt32();
-				}
-
+				var sampler = new DefaultRandomSource();
 				const int maxValue = 67;
 				for (int i = 0; i < iterations; i++) {
-					int x = Sampler.SampleInt32(maxValue);
+					int x = sampler.SampleInt32(maxValue);
 					if (x < 0) throw new InvalidOperationException();
 					else if (x > maxValue) throw new InvalidOperationException();
 				}
