@@ -18,6 +18,16 @@ namespace BoringCardLib {
 			mCards = new CardGroup(cards);
 		}
 
+		public CardGroup Shuffle(int times = 1) {
+			return Shuffle(new DefaultRandomSource(), times: times);
+		}
+
+		public CardGroup Shuffle(IRandomSource sampler, int times = 1) {
+			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
+			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
+			return Shuffle(sampler, times: times);
+		}
+
 		public IEnumerable<CardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
 			return mCards.Distribute(numberOfPiles, distributionPolicy: distributionPolicy, remainderPolicy: remainderPolicy);
 		}
@@ -48,29 +58,6 @@ namespace BoringCardLib {
 
 		IEnumerator IEnumerable.GetEnumerator() {
 			return mCards.GetEnumerator();
-		}
-
-		public static ImmutableCardGroup Shuffle(ImmutableCardGroup group, int times = 1) {
-			return Shuffle(new DefaultRandomSource(), group, times: times);
-		}
-
-		public static ImmutableCardGroup Shuffle(IRandomSource sampler, ImmutableCardGroup group, int times = 1) {
-			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
-			if (group == null) throw new ArgumentNullException(nameof(group));
-			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
-
-			int n = group.Count;
-			Card[] cards = group.ToArray();
-			do {
-				for (int i = 0; i < n; i++) {
-					var temp = cards[i];
-					int r = i + sampler.SampleInt32(n - i);
-					cards[i] = cards[r];
-					cards[r] = temp;
-				}
-			} while (--times > 0);
-
-			return new ImmutableCardGroup(cards);
 		}
 	}
 }

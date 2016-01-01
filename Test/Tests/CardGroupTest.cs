@@ -218,11 +218,10 @@ namespace Test {
 		[TestMethod]
 		public void Shuffle() {
 			var deck = CardGroup.MakeStandardDeck();
-			Assert.Throws<ArgumentException>(() => CardGroup.Shuffle(deck, -1));
-			Assert.Throws<ArgumentException>(() => CardGroup.Shuffle(deck, 0));
-			Assert.Throws<ArgumentNullException>(() => CardGroup.Shuffle(null as CardGroup));
-			Assert.Throws<ArgumentNullException>(() => CardGroup.Shuffle(null, deck));
-			var ordered = CardGroup.Shuffle(deck);
+			Assert.Throws<ArgumentException>(() => deck.Shuffle(-1));
+			Assert.Throws<ArgumentException>(() => deck.Shuffle(0));
+			Assert.Throws<ArgumentNullException>(() => deck.Shuffle(null));
+			var ordered = deck.Shuffle();
 			Assert.NotEqual(deck, ordered);
 		}
 
