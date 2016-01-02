@@ -18,26 +18,49 @@ namespace BoringCardLib {
 			mCards = new CardGroup(cards);
 		}
 
-		public CardGroup Shuffle(int times = 1) {
+		public ImmutableCardGroup Prepend(IEnumerable<Card> cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			return Prepend(cards.ToArray());
+		}
+
+		public ImmutableCardGroup Prepend(params Card[] cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			if (cards.Length == 0) throw new ArgumentException("Must have elements", nameof(cards));
+			return new ImmutableCardGroup(cards.Concat(mCards));
+		}
+
+		public ImmutableCardGroup Append(IEnumerable<Card> cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			return Append(cards.ToArray());
+		}
+
+		public ImmutableCardGroup Append(params Card[] cards) {
+			if (cards == null) throw new ArgumentNullException(nameof(cards));
+			if (cards.Length == 0) throw new ArgumentException("Must have elements", nameof(cards));
+			return new ImmutableCardGroup(mCards.Concat(cards));
+		}
+
+		public ImmutableCardGroup Shuffle(int times = 1) {
 			return Shuffle(new DefaultRandomSource(), times: times);
 		}
 
-		public CardGroup Shuffle(IRandomSource sampler, int times = 1) {
+		public ImmutableCardGroup Shuffle(IRandomSource sampler, int times = 1) {
 			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
 			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
-			return mCards.Shuffle(sampler, times: times);
+			return mCards.Shuffle(sampler, times: times).AsImmutable();
 		}
 
-		public IEnumerable<CardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
-			return mCards.Distribute(numberOfPiles, distributionPolicy: distributionPolicy, remainderPolicy: remainderPolicy);
+		public IEnumerable<ImmutableCardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
+			return mCards.Distribute(numberOfPiles, distributionPolicy: distributionPolicy, remainderPolicy: remainderPolicy).
+				Select(g => g.AsImmutable());
 		}
 
-		public SplitResult Split() {
-			return mCards.Split();
+		public ImmutableSplitResult Split() {
+			return new ImmutableSplitResult(mCards.Split());
 		}
 
-		public SplitResult Split(int splitPoint) {
-			return mCards.Split(splitPoint);
+		public ImmutableSplitResult Split(int splitPoint) {
+			return new ImmutableSplitResult(mCards.Split(splitPoint));
 		}
 
 		public ImmutableCardGroup Reverse() {

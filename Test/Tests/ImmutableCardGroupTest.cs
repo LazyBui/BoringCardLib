@@ -85,7 +85,7 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(2, remainderPolicy: (RemainderPolicy)(-1)));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(2, distributionPolicy: (DistributionPolicy)(-1)));
 
-			CardGroup[] split = null;
+			ImmutableCardGroup[] split = null;
 			
 			// Test distribution ordering
 			split = deck.Distribute(2, distributionPolicy: DistributionPolicy.Alternating, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
