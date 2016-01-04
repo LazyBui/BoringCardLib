@@ -88,26 +88,23 @@ namespace BoringCardLib {
 			return result;
 		}
 
-		public CardGroup Shuffle(int times = 1) {
-			return Shuffle(new DefaultRandomSource(), times: times);
+		public void Shuffle(int times = 1) {
+			Shuffle(new DefaultRandomSource(), times: times);
 		}
 
-		public CardGroup Shuffle(IRandomSource sampler, int times = 1) {
+		public void Shuffle(IRandomSource sampler, int times = 1) {
 			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
 			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
 
 			int n = mCards.Count;
-			Card[] cards = mCards.ToArray();
 			do {
 				for (int i = 0; i < n; i++) {
-					var temp = cards[i];
+					var temp = mCards[i];
 					int r = i + sampler.SampleInt32(n - i);
-					cards[i] = cards[r];
-					cards[r] = temp;
+					mCards[i] = mCards[r];
+					mCards[r] = temp;
 				}
 			} while (--times > 0);
-
-			return new CardGroup(cards);
 		}
 
 		public CardGroup Draw(int cards) {

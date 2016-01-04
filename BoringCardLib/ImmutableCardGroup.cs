@@ -47,7 +47,9 @@ namespace BoringCardLib {
 		public ImmutableCardGroup Shuffle(IRandomSource sampler, int times = 1) {
 			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
 			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
-			return mCards.Shuffle(sampler, times: times).AsImmutable();
+			var newGroup = new CardGroup(mCards);
+			newGroup.Shuffle(sampler, times: times);
+			return newGroup.AsImmutable();
 		}
 
 		public IEnumerable<ImmutableCardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {

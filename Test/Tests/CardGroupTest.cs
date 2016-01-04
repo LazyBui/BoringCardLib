@@ -221,7 +221,8 @@ namespace Test {
 			Assert.Throws<ArgumentException>(() => deck.Shuffle(-1));
 			Assert.Throws<ArgumentException>(() => deck.Shuffle(0));
 			Assert.Throws<ArgumentNullException>(() => deck.Shuffle(null));
-			var ordered = deck.Shuffle();
+			var ordered = new CardGroup(deck);
+			ordered.Shuffle();
 			Assert.NotEqual(deck, ordered);
 		}
 
