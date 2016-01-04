@@ -200,8 +200,11 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append());
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new Card[0]));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new List<Card>()));
+			Assert.True(deck.Count == 52);
 			var card = deck.Draw();
+			Assert.True(deck.Count == 51);
 			deck.Append(card);
+			Assert.True(deck.Count == 52);
 			Assert.Equal(deck.Bottom, card);
 
 			deck = CardGroup.MakeStandardDeck();
@@ -210,8 +213,11 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend());
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new Card[0]));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new List<Card>()));
+			Assert.True(deck.Count == 52);
 			card = deck.Draw();
+			Assert.True(deck.Count == 51);
 			deck.Prepend(card);
+			Assert.True(deck.Count == 52);
 			Assert.Equal(deck.Top, card);
 		}
 
@@ -234,6 +240,7 @@ namespace Test {
 			Assert.NotNull(split.Bottom);
 			Assert.True(split.Top.Count == 26);
 			Assert.True(split.Bottom.Count == 26);
+			Assert.True(deck.Count == 0);
 
 			deck = CardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
@@ -243,6 +250,7 @@ namespace Test {
 			Assert.NotNull(split.Bottom);
 			Assert.True(split.Top.Count == 13);
 			Assert.True(split.Bottom.Count == 39);
+			Assert.True(deck.Count == 0);
 		}
 
 		[TestMethod]
@@ -260,7 +268,10 @@ namespace Test {
 
 		[TestMethod]
 		public void Distribute() {
-			var deck = CardGroup.MakeStandardDeck();
+			CardGroup deck = null;
+			Action init = () => deck = CardGroup.MakeStandardDeck();
+
+			init();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(0));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(1));
@@ -270,78 +281,106 @@ namespace Test {
 			CardGroup[] split = null;
 			
 			// Test distribution ordering
+			init();
 			split = deck.Distribute(2, distributionPolicy: DistributionPolicy.Alternating, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Spades, Rank.Three));
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(3, distributionPolicy: DistributionPolicy.Alternating, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Spades, Rank.Three));
 			Assert.True(split[2].Top == new Card(Suit.Spades, Rank.Four));
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(2, distributionPolicy: DistributionPolicy.Heap, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Hearts, Rank.Two));
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(3, distributionPolicy: DistributionPolicy.Heap, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Clubs, Rank.Six));
 			Assert.True(split[2].Top == new Card(Suit.Hearts, Rank.Ten));
+			Assert.True(deck.Count == 0);
 
 			// Test remainder distribution
+			init();
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 2);
 			Assert.True(split[0].Count == 26);
 			Assert.True(split[1].Count == 26);
-			
+			Assert.True(deck.Count == 0);
+
+			init();
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 2);
 			Assert.True(split[0].Count == 26);
 			Assert.True(split[1].Count == 26);
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(2, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 2);
 			Assert.True(split[0].Count == 26);
 			Assert.True(split[1].Count == 26);
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 3);
 			Assert.True(split[0].Count == 18);
 			Assert.True(split[1].Count == 17);
 			Assert.True(split[2].Count == 17);
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 4);
 			Assert.True(split[0].Count == 17);
 			Assert.True(split[1].Count == 17);
 			Assert.True(split[2].Count == 17);
 			Assert.True(split[3].Count == 1);
+			Assert.True(deck.Count == 0);
 
+			init();
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 3);
 			Assert.True(split[0].Count == 17);
 			Assert.True(split[1].Count == 17);
 			Assert.True(split[2].Count == 17);
+			Assert.True(deck.Count == 0);
 
+			init();
 			deck.Draw(2);
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.Distribute).ToArray();
 			Assert.True(split.Length == 3);
 			Assert.True(split[0].Count == 17);
 			Assert.True(split[1].Count == 17);
 			Assert.True(split[2].Count == 16);
+			Assert.True(deck.Count == 0);
 
+			init();
+			deck.Draw(2);
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.SeparatePile).ToArray();
 			Assert.True(split.Length == 4);
 			Assert.True(split[0].Count == 16);
 			Assert.True(split[1].Count == 16);
 			Assert.True(split[2].Count == 16);
 			Assert.True(split[3].Count == 2);
+			Assert.True(deck.Count == 0);
 
+			init();
+			deck.Draw(2);
 			split = deck.Distribute(3, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
 			Assert.True(split.Length == 3);
 			Assert.True(split[0].Count == 16);
 			Assert.True(split[1].Count == 16);
 			Assert.True(split[2].Count == 16);
+			Assert.True(deck.Count == 0);
 		}
 
 		[TestMethod]
@@ -465,7 +504,8 @@ namespace Test {
 			deck = CardGroup.MakeStandardDeck();
 			Assert.DoesNotThrow(() => deck.Reverse());
 
-			var deck2 = deck.Reverse();
+			var deck2 = deck.Duplicate();
+			deck2.Reverse();
 			Assert.True(deck.Top == deck2.Bottom);
 			Assert.True(deck.Bottom == deck2.Top);
 		}

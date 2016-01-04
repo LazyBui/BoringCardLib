@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BoringCardLib {
-	public sealed class CardGroup : IEnumerable<Card> {
+	public sealed class CardGroup : IEnumerable<Card>, IEnumerable {
 		private List<Card> mCards = new List<Card>();
 
 		public int Count { get { return mCards.Count; } }
@@ -81,13 +81,6 @@ namespace BoringCardLib {
 			mCards.AddRange(cards.ToList());
 		}
 
-		public Card Draw() {
-			if (mCards.Count == 0) throw new InvalidOperationException();
-			var result = mCards[0];
-			mCards.RemoveAt(0);
-			return result;
-		}
-
 		public void Shuffle(int times = 1) {
 			Shuffle(new DefaultRandomSource(), times: times);
 		}
@@ -107,6 +100,13 @@ namespace BoringCardLib {
 			} while (--times > 0);
 		}
 
+		public Card Draw() {
+			if (mCards.Count == 0) throw new InvalidOperationException();
+			var result = mCards[0];
+			mCards.RemoveAt(0);
+			return result;
+		}
+
 		public CardGroup Draw(int cards) {
 			if (cards <= 0) throw new ArgumentException("Must be > 0", nameof(cards));
 			if (cards >= Count) {
@@ -122,20 +122,6 @@ namespace BoringCardLib {
 			return new CardGroup(result);
 		}
 
-		public CardStackOperation Discard(Card card) {
-			if (card == null) throw new ArgumentNullException(nameof(card));
-			CardStackOperation result = CardStackOperation.CardNotPresent;
-			for (int i = 0; i < mCards.Count; i++) {
-				var c = mCards[i];
-				if (c == card) {
-					result = CardStackOperation.Performed;
-					mCards.RemoveAt(i);
-					break;
-				}
-			}
-			return result;
-		}
-
 		public CardStackOperation Replace(Card card, Card replacement) {
 			if (card == null) throw new ArgumentNullException(nameof(card));
 			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
@@ -145,6 +131,20 @@ namespace BoringCardLib {
 				if (c == card) {
 					result = CardStackOperation.Performed;
 					mCards[i] = replacement;
+					break;
+				}
+			}
+			return result;
+		}
+
+		public CardStackOperation Discard(Card card) {
+			if (card == null) throw new ArgumentNullException(nameof(card));
+			CardStackOperation result = CardStackOperation.CardNotPresent;
+			for (int i = 0; i < mCards.Count; i++) {
+				var c = mCards[i];
+				if (c == card) {
+					result = CardStackOperation.Performed;
+					mCards.RemoveAt(i);
 					break;
 				}
 			}
@@ -231,7 +231,6 @@ namespace BoringCardLib {
 
 			var groups = new List<CardGroup>(numberOfPiles + 1);
 			int remainder = Count % numberOfPiles;
-
 			switch (distributionPolicy) {
 				case DistributionPolicy.Alternating:
 					for (int i = 0; i < numberOfPiles; i++) {
@@ -292,6 +291,7 @@ namespace BoringCardLib {
 				default: throw new NotImplementedException();
 			}
 
+			mCards.Clear();
 			return groups.AsReadOnly();
 		}
 
@@ -301,13 +301,15 @@ namespace BoringCardLib {
 
 		public SplitResult Split(int splitPoint) {
 			if (splitPoint <= 0) throw new ArgumentException("Must be > 0", nameof(splitPoint));
-			return new SplitResult(
+			var result = new SplitResult(
 				new CardGroup(mCards.Take(splitPoint).ToArray()),
 				new CardGroup(mCards.Skip(splitPoint).ToArray()));
+			mCards.Clear();
+			return result;
 		}
 
-		public CardGroup Reverse() {
-			return new CardGroup(mCards.Reverse<Card>().ToArray());
+		public void Reverse() {
+			mCards = mCards.Reverse<Card>().ToList();
 		}
 
 		public CardGroup Duplicate() {

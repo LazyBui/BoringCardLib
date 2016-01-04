@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BoringCardLib {
-	public sealed class ImmutableCardGroup : IEnumerable<Card> {
+	public sealed class ImmutableCardGroup : IEnumerable<Card>, IEnumerable {
 		private CardGroup mCards = null;
 
 		public int Count { get { return mCards.Count; } }
@@ -47,26 +47,31 @@ namespace BoringCardLib {
 		public ImmutableCardGroup Shuffle(IRandomSource sampler, int times = 1) {
 			if (sampler == null) throw new ArgumentNullException(nameof(sampler));
 			if (times <= 0) throw new ArgumentException("Must be > 0", nameof(times));
-			var newGroup = new CardGroup(mCards);
+			var newGroup = mCards.Duplicate();
 			newGroup.Shuffle(sampler, times: times);
 			return newGroup.AsImmutable();
 		}
 
 		public IEnumerable<ImmutableCardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
-			return mCards.Distribute(numberOfPiles, distributionPolicy: distributionPolicy, remainderPolicy: remainderPolicy).
+			return mCards.Duplicate().Distribute(
+				numberOfPiles,
+				distributionPolicy: distributionPolicy,
+				remainderPolicy: remainderPolicy).
 				Select(g => g.AsImmutable());
 		}
 
 		public ImmutableSplitResult Split() {
-			return new ImmutableSplitResult(mCards.Split());
+			return new ImmutableSplitResult(mCards.Duplicate().Split());
 		}
 
 		public ImmutableSplitResult Split(int splitPoint) {
-			return new ImmutableSplitResult(mCards.Split(splitPoint));
+			return new ImmutableSplitResult(mCards.Duplicate().Split(splitPoint));
 		}
 
 		public ImmutableCardGroup Reverse() {
-			return new ImmutableCardGroup(mCards.Reverse<Card>().ToArray());
+			var newGroup = mCards.Duplicate();
+			newGroup.Reverse();
+			return new ImmutableCardGroup(newGroup);
 		}
 
 		public ImmutableCardGroup Duplicate() {
