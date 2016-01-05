@@ -291,7 +291,12 @@ namespace BoringCardLib {
 				default: throw new NotImplementedException();
 			}
 
-			mCards.Clear();
+			if (remainderPolicy != RemainderPolicy.NoRemainder || remainder == 0) {
+				mCards.Clear();
+			}
+			else {
+				mCards = mCards.Skip(Count - remainder).ToArray().ToList(); 
+			}
 			return groups.AsReadOnly();
 		}
 

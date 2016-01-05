@@ -292,7 +292,7 @@ namespace Test {
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Spades, Rank.Three));
 			Assert.True(split[2].Top == new Card(Suit.Spades, Rank.Four));
-			Assert.True(deck.Count == 0);
+			Assert.True(deck.Count == 1);
 
 			init();
 			split = deck.Distribute(2, distributionPolicy: DistributionPolicy.Heap, remainderPolicy: RemainderPolicy.NoRemainder).ToArray();
@@ -305,7 +305,7 @@ namespace Test {
 			Assert.True(split[0].Top == new Card(Suit.Spades, Rank.Two));
 			Assert.True(split[1].Top == new Card(Suit.Clubs, Rank.Six));
 			Assert.True(split[2].Top == new Card(Suit.Hearts, Rank.Ten));
-			Assert.True(deck.Count == 0);
+			Assert.True(deck.Count == 1);
 
 			// Test remainder distribution
 			init();
@@ -352,7 +352,7 @@ namespace Test {
 			Assert.True(split[0].Count == 17);
 			Assert.True(split[1].Count == 17);
 			Assert.True(split[2].Count == 17);
-			Assert.True(deck.Count == 0);
+			Assert.True(deck.Count == 1);
 
 			init();
 			deck.Draw(2);
@@ -380,7 +380,7 @@ namespace Test {
 			Assert.True(split[0].Count == 16);
 			Assert.True(split[1].Count == 16);
 			Assert.True(split[2].Count == 16);
-			Assert.True(deck.Count == 0);
+			Assert.True(deck.Count == 2);
 		}
 
 		[TestMethod]
