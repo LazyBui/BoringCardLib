@@ -75,7 +75,9 @@
     <Compile Include="Framework\StringAssertions.cs" />
     <Compile Include="Framework\ObjectAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\ImmutableDrawResultTest.cs" />
     <Compile Include="Tests\ImmutableCardGroupTest.cs" />
+    <Compile Include="Tests\ImmutableSplitResultTest.cs" />
     <Compile Include="Tests\SplitResultTest.cs" />
     <Compile Include="Tests\DiscardRequestTest.cs" />
     <Compile Include="Tests\CardGroupTest.cs" />

@@ -52,6 +52,23 @@ namespace BoringCardLib {
 			return newGroup.AsImmutable();
 		}
 
+		public ImmutableDrawResult Draw() {
+			return Draw(1);
+		}
+
+		public ImmutableDrawResult Draw(int cards) {
+			if (cards <= 0) throw new ArgumentException("Must be > 0", nameof(cards));
+			if (cards >= Count) {
+				return new ImmutableDrawResult(
+					new ImmutableCardGroup(),
+					Duplicate());
+			}
+
+			return new ImmutableDrawResult(
+				new ImmutableCardGroup(mCards.Skip(cards).ToArray()),
+				new ImmutableCardGroup(mCards.Take(cards).ToArray()));
+		}
+
 		public IEnumerable<ImmutableCardGroup> Distribute(int numberOfPiles, DistributionPolicy distributionPolicy = DistributionPolicy.Alternating, RemainderPolicy remainderPolicy = RemainderPolicy.Distribute) {
 			return mCards.Duplicate().Distribute(
 				numberOfPiles,

@@ -58,6 +58,30 @@ namespace Test {
 		}
 
 		[TestMethod]
+		public void Draw() {
+			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			int max = deck.Count;
+			ImmutableCardGroup top = new ImmutableCardGroup(deck.Top);
+			var result = deck.Draw();
+			Assert.True(deck.Count == 52);
+			Assert.NotNull(result.Drawn);
+			Assert.NotNull(result.DrawnFrom);
+			Assert.True(result.DrawnFrom.Count == 51);
+			Assert.True(result.Drawn.Count == 1);
+			Assert.Equal(result.Drawn, top);
+
+			Assert.ThrowsExact<ArgumentException>(() => deck.Draw(-1));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Draw(0));
+			result = deck.Draw(5);
+
+			Assert.True(deck.Count == 52);
+			Assert.True(result.DrawnFrom.Count == 52 - 5);
+			Assert.True(result.Drawn.Count == 5);
+			Assert.None(result.Drawn, v => result.DrawnFrom.Contains(v));
+			Assert.None(result.DrawnFrom, v => result.Drawn.Contains(v));
+		}
+
+		[TestMethod]
 		public void AppendAndPrepend() {
 			var deck = CardGroup.MakeStandardDeck().AsImmutable();
 			var card = deck.Top;

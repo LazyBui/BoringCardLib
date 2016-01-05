@@ -61,6 +61,7 @@
     <Compile Include="DefaultRandomSource.cs" />
     <Compile Include="ImmutableCardGroup.cs" />
     <Compile Include="DistributionPolicy.cs" />
+    <Compile Include="ImmutableDrawResult.cs" />
     <Compile Include="RemainderPolicy.cs" />
     <Compile Include="IRandomSource.cs" />
     <Compile Include="ImmutableSplitResult.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Direction.cs" />
     <Compile Include="Hasher.cs" />
     <Compile Include="Operators.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="SuitExtensions.cs" />
     <Compile Include="Rank.cs" />
     <Compile Include="Suit.cs" />
