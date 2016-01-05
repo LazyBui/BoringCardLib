@@ -37,7 +37,7 @@ namespace Test {
 
 		[TestMethod]
 		public void TopAndBottom() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			Card top = deck.Top;
 			Card bottom = deck.Bottom;
 
@@ -57,9 +57,122 @@ namespace Test {
 			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.Bottom; });
 		}
 
+				[TestMethod]
+		public void MakeStandardDeck() {
+			var deck = ImmutableCardGroup.MakeStandardDeck();
+			Assert.True(deck.Count == 52);
+
+			var ranks = new[] {
+				Rank.Two,
+				Rank.Three,
+				Rank.Four,
+				Rank.Five,
+				Rank.Six,
+				Rank.Seven,
+				Rank.Eight,
+				Rank.Nine,
+				Rank.Ten,
+				Rank.Jack,
+				Rank.Queen,
+				Rank.King,
+				Rank.Ace
+			};
+			Action<Suit> verifySuit = s => {
+				Assert.Exactly(deck, 13, v => v.Suit == s);
+				Assert.True(ranks.All(r => deck.Any(v => v.Suit == s && v.Rank == r)));
+			};
+
+			verifySuit(Suit.Clubs);
+			verifySuit(Suit.Diamonds);
+			verifySuit(Suit.Hearts);
+			verifySuit(Suit.Spades);
+
+			deck = ImmutableCardGroup.MakeStandardDeck(true);
+			Assert.True(deck.Count == 54);
+
+			verifySuit(Suit.Clubs);
+			verifySuit(Suit.Diamonds);
+			verifySuit(Suit.Hearts);
+			verifySuit(Suit.Spades);
+			Assert.True(deck.Count(v => v.Suit == Suit.Joker && v.Rank == Rank.Joker) == 2);
+
+			deck = ImmutableCardGroup.MakeStandardDeck(initializeValues: c => {
+				switch (c.Rank) {
+					case Rank.Ace: return c.WithValue(1);
+					case Rank.Two: return c.WithValue(2);
+					case Rank.Three: return c.WithValue(3);
+					case Rank.Four: return c.WithValue(4);
+					case Rank.Five: return c.WithValue(5);
+					case Rank.Six: return c.WithValue(6);
+					case Rank.Seven: return c.WithValue(7);
+					case Rank.Eight: return c.WithValue(8);
+					case Rank.Nine: return c.WithValue(9);
+					case Rank.Ten: return c.WithValue(10);
+					case Rank.Jack: return c.WithValue(11);
+					case Rank.Queen: return c.WithValue(12);
+					case Rank.King: return c.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			Assert.True(deck.Count == 52);
+			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
+			for (int i = 0; i < 13; i++) {
+				Assert.True(deck.Count(c => c.Value == (i + 1)) == 4);
+			}
+		}
+
+		[TestMethod]
+		public void MakeFullSuit() {
+			var deck = ImmutableCardGroup.MakeFullSuit(Suit.Spades);
+			Assert.True(deck.Count == 13);
+			Assert.All(deck, v => v.Suit == Suit.Spades);
+			var ranks = new[] {
+				Rank.Two,
+				Rank.Three,
+				Rank.Four,
+				Rank.Five,
+				Rank.Six,
+				Rank.Seven,
+				Rank.Eight,
+				Rank.Nine,
+				Rank.Ten,
+				Rank.Jack,
+				Rank.Queen,
+				Rank.King,
+				Rank.Ace
+			};
+			Assert.True(ranks.All(r => deck.Any(v => v.Rank == r)));
+
+			Assert.ThrowsExact<ArgumentException>(() => deck = ImmutableCardGroup.MakeFullSuit((Suit)(-1)));
+
+			deck = ImmutableCardGroup.MakeFullSuit(Suit.Spades, initializeValues: c => {
+				switch (c.Rank) {
+					case Rank.Ace: return c.WithValue(1);
+					case Rank.Two: return c.WithValue(2);
+					case Rank.Three: return c.WithValue(3);
+					case Rank.Four: return c.WithValue(4);
+					case Rank.Five: return c.WithValue(5);
+					case Rank.Six: return c.WithValue(6);
+					case Rank.Seven: return c.WithValue(7);
+					case Rank.Eight: return c.WithValue(8);
+					case Rank.Nine: return c.WithValue(9);
+					case Rank.Ten: return c.WithValue(10);
+					case Rank.Jack: return c.WithValue(11);
+					case Rank.Queen: return c.WithValue(12);
+					case Rank.King: return c.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			Assert.True(deck.Count == 13);
+			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
+			for (int i = 0; i < 13; i++) {
+				Assert.True(deck.Count(c => c.Value == (i + 1)) == 1);
+			}
+		}
+
 		[TestMethod]
 		public void Draw() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			int max = deck.Count;
 			ImmutableCardGroup top = new ImmutableCardGroup(deck.Top);
 			var result = deck.Draw();
@@ -83,7 +196,7 @@ namespace Test {
 
 		[TestMethod]
 		public void AppendAndPrepend() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			var card = deck.Top;
 			var mutable = deck.AsMutable();
 			mutable.Discard(1);
@@ -114,18 +227,18 @@ namespace Test {
 
 		[TestMethod]
 		public void Shuffle() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.Throws<ArgumentException>(() => deck.Shuffle(-1));
 			Assert.Throws<ArgumentException>(() => deck.Shuffle(0));
 			Assert.Throws<ArgumentNullException>(() => deck.Shuffle(null));
 			var ordered = deck.Shuffle();
 			Assert.NotEqual(deck, ordered);
-			Assert.Equal(deck, CardGroup.MakeStandardDeck().AsImmutable());
+			Assert.Equal(deck, ImmutableCardGroup.MakeStandardDeck());
 		}
 
 		[TestMethod]
 		public void Split() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			var split = deck.Split();
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);
@@ -133,7 +246,7 @@ namespace Test {
 			Assert.True(split.Bottom.Count == 26);
 			Assert.True(deck.Count == 52);
 
-			deck = CardGroup.MakeStandardDeck().AsImmutable();
+			deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(0));
 			split = deck.Split(13);
@@ -146,7 +259,7 @@ namespace Test {
 
 		[TestMethod]
 		public void Distribute() {
-			var deck = CardGroup.MakeStandardDeck().AsImmutable();
+			var deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(0));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Distribute(1));
@@ -250,7 +363,7 @@ namespace Test {
 		public void Reverse() {
 			var deck = new ImmutableCardGroup();
 			Assert.DoesNotThrow(() => deck.Reverse());
-			deck = CardGroup.MakeStandardDeck().AsImmutable();
+			deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.DoesNotThrow(() => deck.Reverse());
 
 			var deck2 = deck.Reverse();
@@ -262,7 +375,7 @@ namespace Test {
 		public void Duplicate() {
 			var deck = new ImmutableCardGroup();
 			Assert.DoesNotThrow(() => deck.Duplicate());
-			deck = CardGroup.MakeStandardDeck().AsImmutable();
+			deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.DoesNotThrow(() => deck.Duplicate());
 		}
 	}

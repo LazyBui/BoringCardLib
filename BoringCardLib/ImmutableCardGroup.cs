@@ -18,6 +18,20 @@ namespace BoringCardLib {
 			mCards = new CardGroup(cards);
 		}
 
+		public static ImmutableCardGroup MakeStandardDeck(bool includeJokers = false, Func<Card, Card> initializeValues = null) {
+			return CardGroup.MakeStandardDeck(
+				includeJokers: includeJokers,
+				initializeValues: initializeValues).
+				AsImmutable();
+		}
+
+		public static ImmutableCardGroup MakeFullSuit(Suit suit, Func<Card, Card> initializeValues = null) {
+			return CardGroup.MakeFullSuit(
+				suit,
+				initializeValues: initializeValues).
+				AsImmutable();
+		}
+
 		public ImmutableCardGroup Prepend(IEnumerable<Card> cards) {
 			if (cards == null) throw new ArgumentNullException(nameof(cards));
 			return Prepend(cards.ToArray());
