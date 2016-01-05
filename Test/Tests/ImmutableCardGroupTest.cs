@@ -221,5 +221,25 @@ namespace Test {
 			Assert.True(split[2].Count == 16);
 			Assert.True(deck.Count == 50);
 		}
+
+		[TestMethod]
+		public void Reverse() {
+			var deck = new ImmutableCardGroup();
+			Assert.DoesNotThrow(() => deck.Reverse());
+			deck = CardGroup.MakeStandardDeck().AsImmutable();
+			Assert.DoesNotThrow(() => deck.Reverse());
+
+			var deck2 = deck.Reverse();
+			Assert.True(deck.Top == deck2.Bottom);
+			Assert.True(deck.Bottom == deck2.Top);
+		}
+
+		[TestMethod]
+		public void Duplicate() {
+			var deck = new ImmutableCardGroup();
+			Assert.DoesNotThrow(() => deck.Duplicate());
+			deck = CardGroup.MakeStandardDeck().AsImmutable();
+			Assert.DoesNotThrow(() => deck.Duplicate());
+		}
 	}
 }
