@@ -57,7 +57,7 @@ namespace Test {
 			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.Bottom; });
 		}
 
-				[TestMethod]
+		[TestMethod]
 		public void MakeStandardDeck() {
 			var deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.True(deck.Count == 52);
@@ -246,9 +246,14 @@ namespace Test {
 			Assert.True(split.Bottom.Count == 26);
 			Assert.True(deck.Count == 52);
 
-			deck = ImmutableCardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
-			Assert.ThrowsExact<ArgumentException>(() => deck.Split(0));
+			split = deck.Split(0);
+			Assert.NotNull(split.Top);
+			Assert.NotNull(split.Bottom);
+			Assert.True(split.Top.Count == 0);
+			Assert.True(split.Bottom.Count == 52);
+			Assert.True(deck.Count == 52);
+
 			split = deck.Split(13);
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);

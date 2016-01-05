@@ -244,7 +244,14 @@ namespace Test {
 
 			deck = CardGroup.MakeStandardDeck();
 			Assert.ThrowsExact<ArgumentException>(() => deck.Split(-1));
-			Assert.ThrowsExact<ArgumentException>(() => deck.Split(0));
+			split = deck.Split(0);
+			Assert.NotNull(split.Top);
+			Assert.NotNull(split.Bottom);
+			Assert.True(split.Top.Count == 0);
+			Assert.True(split.Bottom.Count == 52);
+			Assert.True(deck.Count == 0);
+
+			deck = CardGroup.MakeStandardDeck();
 			split = deck.Split(13);
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);

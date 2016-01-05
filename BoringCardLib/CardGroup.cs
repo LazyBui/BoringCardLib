@@ -305,7 +305,7 @@ namespace BoringCardLib {
 		}
 
 		public SplitResult Split(int splitPoint) {
-			if (splitPoint <= 0) throw new ArgumentException("Must be > 0", nameof(splitPoint));
+			if (splitPoint < 0) throw new ArgumentException("Must be >= 0", nameof(splitPoint));
 			var result = new SplitResult(
 				new CardGroup(mCards.Take(splitPoint).ToArray()),
 				new CardGroup(mCards.Skip(splitPoint).ToArray()));
