@@ -6,6 +6,8 @@ namespace BoringCardLib {
 		public Rank Rank { get; private set; }
 		public int? Value { get; private set; }
 
+		public static Card Joker { get { return new Card(Suit.Joker, Rank.Joker); } }
+
 		public Card(Suit suit, Rank rank, int? pointValue = null) {
 			suit.ThrowIfInvalid(nameof(suit));
 			rank.ThrowIfInvalid(nameof(rank));

@@ -166,12 +166,17 @@ namespace BoringCardLib {
 			bool hasQuantity = request.Quantity != null;
 			bool hasRank = request.Ranks.Any();
 			bool hasSuit = request.Suits.Any();
+			bool hasValues = request.Values.Any() || request.NullValues;
+			bool hasSpecificCards = request.Cards.Any();
+			bool hasSpecificCardsOnly = hasSpecificCards && !hasValues && !hasSuit && !hasRank;
 			int quantity = request.Quantity.GetValueOrDefault(-1);
 			var suits = request.Suits;
 			var ranks = request.Ranks;
+			var cards = request.Cards;
+			var values = request.Values;
 			var result = new List<Card>();
 
-			if (hasQuantity && !(hasRank || hasSuit)) {
+			if (hasQuantity && !(hasRank || hasSuit || hasSpecificCards || hasValues)) {
 				if (quantity >= Count) {
 					result.AddRange(mCards);
 					mCards.Clear();
@@ -189,9 +194,15 @@ namespace BoringCardLib {
 			}
 			else {
 				Func<Card, bool> isDiscard = card => {
+					if (hasSpecificCardsOnly) return cards.Contains(card);
+					if (hasSpecificCards && cards.Contains(card)) return true;
+
 					bool rankValid = !hasRank || ranks.Contains(card.Rank);
 					bool suitValid = !hasSuit || suits.Contains(card.Suit);
-					return rankValid && suitValid;
+					bool valueValid =
+						(!hasValues || (card.Value != null && values.Contains(card.Value.GetValueOrDefault()))) ||
+						(request.NullValues && card.Value == null);
+					return rankValid && suitValid && valueValid;
 				};
 
 				switch (request.Direction) {

@@ -60,7 +60,7 @@ namespace Test {
 		[TestMethod]
 		public void MakeStandardDeck() {
 			var deck = CardGroup.MakeStandardDeck();
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 
 			var ranks = new[] {
 				Rank.Two,
@@ -114,7 +114,7 @@ namespace Test {
 					default: throw new NotImplementedException();
 				}
 			});
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 			Assert.None(deck, c => c.Value == null || c.Value < 1 || c.Value > 13);
 			for (int i = 0; i < 13; i++) {
 				Assert.True(deck.Count(c => c.Value == (i + 1)) == 4);
@@ -186,7 +186,7 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Draw(0));
 			CardGroup drawn = deck.Draw(5);
 
-			Assert.True(deck.Count == 52 - 5);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 5);
 			Assert.True(drawn.Count == 5);
 			Assert.None(drawn, v => deck.Contains(v));
 			Assert.None(deck, v => drawn.Contains(v));
@@ -200,11 +200,11 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append());
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new Card[0]));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Append(new List<Card>()));
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 			var card = deck.Draw();
 			Assert.True(deck.Count == 51);
 			deck.Append(card);
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 			Assert.Equal(deck.Bottom, card);
 
 			deck = CardGroup.MakeStandardDeck();
@@ -213,11 +213,11 @@ namespace Test {
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend());
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new Card[0]));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Prepend(new List<Card>()));
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 			card = deck.Draw();
 			Assert.True(deck.Count == 51);
 			deck.Prepend(card);
-			Assert.True(deck.Count == 52);
+			Assert.True(deck.Count == Constants.StandardDeckSize);
 			Assert.Equal(deck.Top, card);
 		}
 
@@ -248,7 +248,7 @@ namespace Test {
 			Assert.NotNull(split.Top);
 			Assert.NotNull(split.Bottom);
 			Assert.True(split.Top.Count == 0);
-			Assert.True(split.Bottom.Count == 52);
+			Assert.True(split.Bottom.Count == Constants.StandardDeckSize);
 			Assert.True(deck.Count == 0);
 
 			deck = CardGroup.MakeStandardDeck();
@@ -432,7 +432,7 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(suit: Suit.Clubs));
 			Assert.True(discard.Count == 13);
-			Assert.True(deck.Count == 52 - 13);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 13);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
 			Assert.All(deck, v => v.Suit != Suit.Clubs);
 
@@ -440,7 +440,7 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(suit: Suit.Clubs, quantity: 3));
 			Assert.True(discard.Count == 3);
-			Assert.True(deck.Count == 52 - 3);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 3);
 			Assert.All(discard, v => v.Suit == Suit.Clubs);
 			Assert.Exactly(deck, 13 - 3, v => v.Suit == Suit.Clubs);
 
@@ -448,7 +448,7 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(rank: Rank.Ace));
 			Assert.True(discard.Count == 4);
-			Assert.True(deck.Count == 52 - 4);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 4);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
 			Assert.All(deck, v => v.Rank != Rank.Ace);
 
@@ -456,14 +456,14 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(rank: Rank.Ace, quantity: 3));
 			Assert.True(discard.Count == 3);
-			Assert.True(deck.Count == 52 - 3);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 3);
 			Assert.All(discard, v => v.Rank == Rank.Ace);
 			Assert.Exactly(deck, 1, v => v.Rank == Rank.Ace);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard(
 				new DiscardRequest(quantity: 100));
-			Assert.True(discard.Count == 52);
+			Assert.True(discard.Count == Constants.StandardDeckSize);
 			Assert.True(deck.Count == 0);
 
 			deck = CardGroup.MakeStandardDeck();
@@ -478,7 +478,7 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(suits: new[] { Suit.Spades, Suit.Clubs }, quantity: 6));
 			Assert.True(discard.Count == 6);
-			Assert.True(deck.Count == 52 - 6);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 6);
 			Assert.All(discard, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
 			Assert.Exactly(deck, 26 - 6, v => v.Suit == Suit.Spades || v.Suit == Suit.Clubs);
 
@@ -486,7 +486,7 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }));
 			Assert.True(discard.Count == 8);
-			Assert.True(deck.Count == 52 - 8);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 8);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 			Assert.None(deck, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 
@@ -494,14 +494,115 @@ namespace Test {
 			discard = deck.Discard(
 				new DiscardRequest(ranks: new[] { Rank.Two, Rank.Three }, quantity: 6));
 			Assert.True(discard.Count == 6);
-			Assert.True(deck.Count == 52 - 6);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 6);
 			Assert.All(discard, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 			Assert.Exactly(deck, 8 - 6, v => v.Rank == Rank.Two || v.Rank == Rank.Three);
 
 			deck = CardGroup.MakeStandardDeck();
 			discard = deck.Discard();
-			Assert.True(discard.Count == 52);
+			Assert.True(discard.Count == Constants.StandardDeckSize);
 			Assert.True(deck.Count == 0);
+
+			deck = CardGroup.MakeStandardDeck(initializeValues: card => {
+				switch (card.Rank) {
+					case Rank.Ace: return card.WithValue(1);
+					case Rank.Two: return card.WithValue(2);
+					case Rank.Three: return card.WithValue(3);
+					case Rank.Four: return card.WithValue(4);
+					case Rank.Five: return card.WithValue(5);
+					case Rank.Six: return card.WithValue(6);
+					case Rank.Seven: return card.WithValue(7);
+					case Rank.Eight: return card.WithValue(8);
+					case Rank.Nine: return card.WithValue(9);
+					case Rank.Ten: return card.WithValue(10);
+					case Rank.Jack: return card.WithValue(11);
+					case Rank.Queen: return card.WithValue(12);
+					case Rank.King: return card.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			discard = deck.Discard(new DiscardRequest(value: 4));
+			Assert.True(discard.Count == 4);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 4);
+
+			deck = CardGroup.MakeStandardDeck(initializeValues: card => {
+				switch (card.Rank) {
+					case Rank.Ace: return card.WithValue(1);
+					case Rank.Two: return card.WithValue(2);
+					case Rank.Three: return card.WithValue(3);
+					case Rank.Four: return card.WithValue(4);
+					case Rank.Five: return card.WithValue(5);
+					case Rank.Six: return card.WithValue(6);
+					case Rank.Seven: return card.WithValue(7);
+					case Rank.Eight: return card.WithValue(8);
+					case Rank.Nine: return card.WithValue(9);
+					case Rank.Ten: return card.WithValue(10);
+					case Rank.Jack: return card.WithValue(11);
+					case Rank.Queen: return card.WithValue(12);
+					case Rank.King: return card.WithValue(13);
+					default: throw new NotImplementedException();
+				}
+			});
+			discard = deck.Discard(new DiscardRequest(values: new[] { 4, 5, 6 }));
+			Assert.True(discard.Count == 12);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 12);
+
+			deck = CardGroup.MakeStandardDeck(initializeValues: card => {
+				switch (card.Rank) {
+					case Rank.Ace: return card.WithValue(1);
+					case Rank.Two: return card.WithValue(2);
+					case Rank.Three: return card.WithValue(3);
+					case Rank.Four: return card.WithValue(4);
+					case Rank.Five: return card.WithValue(5);
+					case Rank.Six: return card.WithValue(6);
+					case Rank.Seven: return card.WithValue(7);
+					case Rank.Eight: return card.WithValue(8);
+					case Rank.Nine: return card.WithValue(9);
+					case Rank.Ten: return card.WithValue(10);
+					case Rank.Jack: return card.WithValue(11);
+					case Rank.Queen: return card.WithValue(12);
+					default: return card;
+				}
+			});
+			discard = deck.Discard(new DiscardRequest(nullValues: true));
+			Assert.True(discard.Count == 4);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 4);
+
+			deck = CardGroup.MakeStandardDeck(initializeValues: card => {
+				switch (card.Rank) {
+					case Rank.Ace: return card.WithValue(1);
+					case Rank.Two: return card.WithValue(2);
+					case Rank.Three: return card.WithValue(3);
+					case Rank.Four: return card.WithValue(4);
+					case Rank.Five: return card.WithValue(5);
+					case Rank.Six: return card.WithValue(6);
+					case Rank.Seven: return card.WithValue(7);
+					case Rank.Eight: return card.WithValue(8);
+					case Rank.Nine: return card.WithValue(9);
+					case Rank.Ten: return card.WithValue(10);
+					case Rank.Jack: return card.WithValue(11);
+					case Rank.Queen: return card.WithValue(12);
+					default: return card;
+				}
+			});
+			discard = deck.Discard(new DiscardRequest(values: new[] { 4, 5, 6 }, nullValues: true));
+			Assert.True(discard.Count == 16);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 16);
+
+			deck = CardGroup.MakeStandardDeck();
+			discard = deck.Discard(new DiscardRequest(card: new Card(Suit.Spades, Rank.Two)));
+			Assert.True(discard.Count == 1);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 1);
+
+			deck = CardGroup.MakeStandardDeck();
+			discard = deck.Discard(new DiscardRequest(cards: new[] { new Card(Suit.Spades, Rank.Two), new Card(Suit.Spades, Rank.Three), new Card(Suit.Spades, Rank.Four) }));
+			Assert.True(discard.Count == 3);
+			Assert.True(deck.Count == Constants.StandardDeckSize - 3);
+
+			deck = CardGroup.MakeStandardDeck();
+			discard = deck.Discard(new DiscardRequest(card: new Card(Suit.Spades, Rank.Two), suit: Suit.Hearts));
+			Assert.True(discard.Count == Constants.StandardSuitSize + 1);
+			Assert.True(deck.Count == Constants.StandardDeckSize - (Constants.StandardSuitSize + 1));
 		}
 
 		[TestMethod]
