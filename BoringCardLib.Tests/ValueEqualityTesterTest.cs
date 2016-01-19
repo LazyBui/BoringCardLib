@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BoringCardLib;
+using Assert = TestLib.Framework.Assert;
 
-namespace Test {
+namespace BoringCardLib.Tests {
 	[TestClass]
 	public class ValueEqualityTesterTest {
 		[TestMethod]

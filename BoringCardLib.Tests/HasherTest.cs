@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BoringCardLib;
+using Assert = TestLib.Framework.Assert;
 
-namespace Test {
+namespace BoringCardLib.Tests {
 	[TestClass]
 	public class HasherTest {
 		// Testing this is a little nebulous without tying to specific hashes (which is a very bad idea)

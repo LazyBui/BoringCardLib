@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BoringCardLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Assert = TestLib.Framework.Assert;
 
-namespace Test {
+namespace BoringCardLib.Tests {
 	[TestClass]
 	public class ImmutableCardGroupTest {
 		[TestMethod]
