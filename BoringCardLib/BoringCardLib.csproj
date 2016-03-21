@@ -54,6 +54,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EnumLib">
+      <HintPath>..\EnumLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -76,7 +79,6 @@
     <Compile Include="SuitExtensions.cs" />
     <Compile Include="Rank.cs" />
     <Compile Include="Suit.cs" />
-    <Compile Include="EnumExt.cs" />
     <Compile Include="SeededRandomSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueEqualityTester.cs" />
