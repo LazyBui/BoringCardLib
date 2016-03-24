@@ -52,8 +52,8 @@ namespace BoringCardLib {
 				if (card != null) throw new ArgumentException($"Must not specify both {nameof(card)} and {nameof(cards)}");
 				if (cards.Any(c => c == null)) throw new ArgumentException("Must not contain nulls", nameof(cards));
 			}
-			suit.ThrowIfInvalid(nameof(suit));
-			rank.ThrowIfInvalid(nameof(rank));
+			if (suit != null) suit.ThrowIfInvalid(nameof(suit));
+			if (rank != null) rank.ThrowIfInvalid(nameof(rank));
 
 			if (quantity == null && nullValues == null &&
 				suit == null && suits == null && 

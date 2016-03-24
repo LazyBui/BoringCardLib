@@ -43,11 +43,12 @@ namespace BoringCardLib {
 		void Dispose(bool disposing) {
 			if (!disposedValue) {
 				if (disposing) {
+					#if NETFX_40_OR_HIGHER
 					mProvider.Dispose();
+					#endif
 				}
 
 				// TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-
 				disposedValue = true;
 			}
 		}
