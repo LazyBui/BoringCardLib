@@ -60,28 +60,44 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Exchange\ImmutableDiscardResult.cs" />
+    <Compile Include="API\Exchange\DistributeRequest.cs" />
+    <Compile Include="API\Exchange\ImmutableDistributeResult.cs" />
+    <Compile Include="API\Exchange\ImmutableReplaceResult.cs" />
+    <Compile Include="API\Exchange\ReplaceRequest.cs" />
+    <Compile Include="API\Exchange\DistributeResult.cs" />
+    <Compile Include="API\Exchange\ReplaceResult.cs" />
+    <Compile Include="API\Exchange\DiscardResult.cs" />
+    <Compile Include="API\RankExtensions.cs" />
     <Compile Include="Card.cs" />
-    <Compile Include="DefaultRandomSource.cs" />
-    <Compile Include="ImmutableCardGroup.cs" />
-    <Compile Include="DistributionPolicy.cs" />
-    <Compile Include="ImmutableDrawResult.cs" />
-    <Compile Include="RemainderPolicy.cs" />
-    <Compile Include="IRandomSource.cs" />
-    <Compile Include="ImmutableSplitResult.cs" />
-    <Compile Include="SplitResult.cs" />
-    <Compile Include="CardGroup.cs" />
-    <Compile Include="DiscardRequest.cs" />
-    <Compile Include="CardStackOperation.cs" />
-    <Compile Include="Direction.cs" />
-    <Compile Include="Hasher.cs" />
-    <Compile Include="Operators.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="SuitExtensions.cs" />
-    <Compile Include="Rank.cs" />
-    <Compile Include="Suit.cs" />
-    <Compile Include="SeededRandomSource.cs" />
+    <Compile Include="Random\DefaultRandomSource.cs" />
+    <Compile Include="ImmutableCardSet.cs" />
+    <Compile Include="API\DistributionPolicy.cs" />
+    <Compile Include="API\Exchange\ImmutableDrawResult.cs" />
+    <Compile Include="API\RemainderPolicy.cs" />
+    <Compile Include="Random\IRandomSource.cs" />
+    <Compile Include="API\Exchange\ImmutableSplitResult.cs" />
+    <Compile Include="API\Exchange\SplitResult.cs" />
+    <Compile Include="CardSet.cs" />
+    <Compile Include="API\Exchange\DiscardRequest.cs" />
+    <Compile Include="API\Direction.cs" />
+    <Compile Include="Util\Hasher.cs" />
+    <Compile Include="Util\Operators.cs" />
+    <Compile Include="Constant.cs" />
+    <Compile Include="API\SuitExtensions.cs" />
+    <Compile Include="API\Rank.cs" />
+    <Compile Include="API\Suit.cs" />
+    <Compile Include="Random\SeededRandomSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ValueEqualityTester.cs" />
+    <Compile Include="Util\ThrowExtensions.Null.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberBelow.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberBelowOrEqual.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberNegative.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberOutsideRange.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberOutsideRangeExclusiveMin.cs" />
+    <Compile Include="Util\ThrowExtensions.NumberZeroOrLess.cs" />
+    <Compile Include="Util\ThrowExtensions.Sequence.cs" />
+    <Compile Include="Util\ValueEqualityTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

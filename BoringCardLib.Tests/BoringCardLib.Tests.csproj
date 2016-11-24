@@ -56,17 +56,25 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="API\ImmutableDistributeResult.cs" />
+    <Compile Include="API\ImmutableDiscardResult.cs" />
+    <Compile Include="API\DistributeResultTest.cs" />
+    <Compile Include="API\DiscardResultTest.cs" />
+    <Compile Include="API\DistributeRequestTest.cs" />
+    <Compile Include="API\ImmutableReplaceResultTest.cs" />
+    <Compile Include="API\ReplaceRequest.cs" />
+    <Compile Include="API\ReplaceResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ImmutableDrawResultTest.cs" />
-    <Compile Include="ImmutableCardGroupTest.cs" />
-    <Compile Include="ImmutableSplitResultTest.cs" />
-    <Compile Include="SplitResultTest.cs" />
-    <Compile Include="DiscardRequestTest.cs" />
-    <Compile Include="CardGroupTest.cs" />
+    <Compile Include="API\ImmutableDrawResultTest.cs" />
+    <Compile Include="ImmutableCardSetTest.cs" />
+    <Compile Include="API\ImmutableSplitResultTest.cs" />
+    <Compile Include="API\SplitResultTest.cs" />
+    <Compile Include="API\DiscardRequestTest.cs" />
+    <Compile Include="CardSetTest.cs" />
     <Compile Include="CardTest.cs" />
-    <Compile Include="HasherTest.cs" />
-    <Compile Include="DefaultRandomSourceTest.cs" />
-    <Compile Include="ValueEqualityTesterTest.cs" />
+    <Compile Include="Util\HasherTest.cs" />
+    <Compile Include="Random\DefaultRandomSourceTest.cs" />
+    <Compile Include="Util\ValueEqualityTesterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BoringCardLib\BoringCardLib.csproj">
