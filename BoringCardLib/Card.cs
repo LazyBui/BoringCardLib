@@ -115,6 +115,31 @@ namespace BoringCardLib {
 		}
 
 		/// <summary>
+		/// Duplicates the current instance <paramref name="duplicationCount" /> times.
+		/// </summary>
+		/// <param name="duplicationCount">The number of times to duplicate.</param>
+		/// <returns>A sequence containing the specified number of duplicates.</returns>
+		/// <exception cref="ArgumentException"><paramref name="duplicationCount" /> is 0 or less.</exception>
+		public CardSet Generate(int duplicationCount) {
+			duplicationCount.ThrowIfZeroOrLess(nameof(duplicationCount));
+			var result = new List<Card>(duplicationCount);
+			for (int i = 0; i < duplicationCount; i++) {
+				result.Add(Duplicate());
+			}
+			return new CardSet(result);
+		}
+
+		/// <summary>
+		/// Duplicates the current instance <paramref name="duplicationCount" /> times.
+		/// </summary>
+		/// <param name="duplicationCount">The number of times to duplicate.</param>
+		/// <returns>A sequence containing the specified number of duplicates.</returns>
+		/// <exception cref="ArgumentException"><paramref name="duplicationCount" /> is 0 or less.</exception>
+		public ImmutableCardSet GenerateImmutable(int duplicationCount) {
+			return Generate(duplicationCount).AsImmutable();
+		}
+
+		/// <summary>
 		/// Indicates whether a card is superior to another based on the passed in rules.
 		/// </summary>
 		/// <param name="other">The card to compare against.</param>

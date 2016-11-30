@@ -145,6 +145,28 @@ namespace BoringCardLib.Tests {
 		}
 
 		[TestMethod]
+		public void Generate() {
+			var card = new Card(Suit.Spades, Rank.Ace);
+			Assert.ThrowsExact<ArgumentException>(() => card.Generate(-1));
+			Assert.ThrowsExact<ArgumentException>(() => card.Generate(0));
+			var dupe = card.Generate(3);
+
+			Assert.Count(dupe, 3);
+			Assert.All(dupe, c => c == card && !object.ReferenceEquals(c, card));
+		}
+
+		[TestMethod]
+		public void GenerateImmutable() {
+			var card = new Card(Suit.Spades, Rank.Ace);
+			Assert.ThrowsExact<ArgumentException>(() => card.GenerateImmutable(-1));
+			Assert.ThrowsExact<ArgumentException>(() => card.GenerateImmutable(0));
+			var dupe = card.GenerateImmutable(3);
+
+			Assert.Count(dupe, 3);
+			Assert.All(dupe, c => c == card && !object.ReferenceEquals(c, card));
+		}
+
+		[TestMethod]
 		public void Properties() {
 			var aceOfSpades = new Card(Suit.Spades, Rank.Ace);
 			Assert.True(aceOfSpades.IsSpade);
