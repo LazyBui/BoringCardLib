@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Represents a preferred mechanism for handling leftovers in a distribution operation.
+	/// </summary>
 	public enum RemainderPolicy {
 		/// <summary>
 		/// Distributes the remainder over piles until there are none left.

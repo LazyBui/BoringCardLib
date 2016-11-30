@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Represents the preferred method of doing a distribution operation.
+	/// </summary>
 	public enum DistributionPolicy {
 		/// <summary>
 		/// Represents dealing 1 card to pile A, 1 card to pile B, 1 card to pile A, etc. until the supply is exhausted 

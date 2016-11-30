@@ -56,20 +56,24 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="API\ImmutableDistributeResult.cs" />
-    <Compile Include="API\ImmutableDiscardResult.cs" />
-    <Compile Include="API\DistributeResultTest.cs" />
-    <Compile Include="API\DiscardResultTest.cs" />
-    <Compile Include="API\DistributeRequestTest.cs" />
-    <Compile Include="API\ImmutableReplaceResultTest.cs" />
-    <Compile Include="API\ReplaceRequest.cs" />
-    <Compile Include="API\ReplaceResult.cs" />
+    <Compile Include="API\SuitExtensionsTest.cs" />
+    <Compile Include="API\RankExtensionsTest.cs" />
+    <Compile Include="API\Exchange\ImmutableDistributeResult.cs" />
+    <Compile Include="API\Exchange\ImmutableDiscardResult.cs" />
+    <Compile Include="API\Exchange\DistributeResultTest.cs" />
+    <Compile Include="API\Exchange\DiscardResultTest.cs" />
+    <Compile Include="API\Exchange\DistributeRequestTest.cs" />
+    <Compile Include="API\Exchange\ImmutableDrawSingleResultTest.cs" />
+    <Compile Include="API\Exchange\ImmutableReplaceResultTest.cs" />
+    <Compile Include="API\Exchange\ReplaceRequest.cs" />
+    <Compile Include="API\Exchange\ReplaceResult.cs" />
+    <Compile Include="DefaultCardComparerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="API\ImmutableDrawResultTest.cs" />
+    <Compile Include="API\Exchange\ImmutableDrawResultTest.cs" />
     <Compile Include="ImmutableCardSetTest.cs" />
-    <Compile Include="API\ImmutableSplitResultTest.cs" />
-    <Compile Include="API\SplitResultTest.cs" />
-    <Compile Include="API\DiscardRequestTest.cs" />
+    <Compile Include="API\Exchange\ImmutableSplitResultTest.cs" />
+    <Compile Include="API\Exchange\SplitResultTest.cs" />
+    <Compile Include="API\Exchange\DiscardRequestTest.cs" />
     <Compile Include="CardSetTest.cs" />
     <Compile Include="CardTest.cs" />
     <Compile Include="Util\HasherTest.cs" />

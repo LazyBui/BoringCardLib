@@ -60,15 +60,18 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\SortDirection.cs" />
     <Compile Include="API\Exchange\ImmutableDiscardResult.cs" />
     <Compile Include="API\Exchange\DistributeRequest.cs" />
     <Compile Include="API\Exchange\ImmutableDistributeResult.cs" />
+    <Compile Include="API\Exchange\ImmutableDrawSingleResult.cs" />
     <Compile Include="API\Exchange\ImmutableReplaceResult.cs" />
     <Compile Include="API\Exchange\ReplaceRequest.cs" />
     <Compile Include="API\Exchange\DistributeResult.cs" />
     <Compile Include="API\Exchange\ReplaceResult.cs" />
     <Compile Include="API\Exchange\DiscardResult.cs" />
     <Compile Include="API\RankExtensions.cs" />
+    <Compile Include="DefaultCardComparer.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Random\DefaultRandomSource.cs" />
     <Compile Include="ImmutableCardSet.cs" />

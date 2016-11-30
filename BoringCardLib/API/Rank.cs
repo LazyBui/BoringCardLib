@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Represents the rank of a playing card.
+	/// </summary>
 	public enum Rank {
 		Two = 2,
 		Three = 3,

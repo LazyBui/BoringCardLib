@@ -4,6 +4,9 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Represents using the <see cref="RNGCryptoServiceProvider" /> class as a source of randomness.
+	/// </summary>
 	public sealed class DefaultRandomSource : IDisposable, IRandomSource {
 		private static RNGCryptoServiceProvider mProvider = new RNGCryptoServiceProvider();
 		private const int StateSize = 2000;
@@ -41,6 +44,12 @@ namespace BoringCardLib {
 			return result;
 		}
 
+		/// <summary>
+		/// Returns an integer the range [0, <paramref name="exclusiveMax" />)
+		/// </summary>
+		/// <param name="exclusiveMax">The exclusive maximum value. e.g. if specified as 100, the caller will get back an integer in the range [0, 99].</param>
+		/// <returns>An integer in the range [0, <paramref name="exclusiveMax" />).</returns>
+		/// <exception cref="ArgumentException"><paramref name="exclusiveMax" /> is less than or equal to 0.</exception>
 		public int SampleInt32(int exclusiveMax) {
 			return SampleInt32Internal(exclusiveMax);
 		}
