@@ -486,11 +486,22 @@ namespace BoringCardLib.Tests {
 			Card bottom = null;
 			Card top = null;
 
-			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as Card));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as Card[]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(new Card[0]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(null as Card));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as List<Card>));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(new List<Card>()));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(new List<Card>() { null }));
 			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as DiscardRequest));
-			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(DefaultCardComparer.Instance, null as Card));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(DefaultCardComparer.Instance, null as Card[]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(DefaultCardComparer.Instance, new Card[0]));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(DefaultCardComparer.Instance, null as Card));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(DefaultCardComparer.Instance, null as List<Card>));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(DefaultCardComparer.Instance, new List<Card>()));
+			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(DefaultCardComparer.Instance, new List<Card>() { null }));
 			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(DefaultCardComparer.Instance, null as DiscardRequest));
-			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null, Card.Joker));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as IEqualityComparer<Card>, Card.Joker));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null as IEqualityComparer<Card>, new List<Card>() { Card.Joker }));
 			Assert.ThrowsExact<ArgumentNullException>(() => deck.Discard(null, new DiscardRequest(quantity: 2)));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(-1));
 			Assert.ThrowsExact<ArgumentException>(() => deck.Discard(0));
@@ -738,6 +749,48 @@ namespace BoringCardLib.Tests {
 			Assert.Contains(result.Discarded, top);
 			Assert.Empty(result.NotFound);
 			Assert.True(deck.Count == Constant.StandardDeckSize);
+
+			var eight = new Card(Suit.Spades, Rank.Eight);
+			deck = eight.GenerateImmutable(20);
+			result = deck.Discard(eight);
+			Assert.Count(deck, 20);
+			Assert.Count(result.Pile, 19);
+			Assert.Count(result.Discarded, 1);
+			Assert.Empty(result.NotFound);
+
+			result = deck.Discard(eight.Generate(5));
+			Assert.Count(deck, 20);
+			Assert.Count(result.Pile, 15);
+			Assert.Count(result.Discarded, 5);
+			Assert.Empty(result.NotFound);
+
+			var seven = new Card(Suit.Hearts, Rank.Seven);
+			var nine = new Card(Suit.Clubs, Rank.Nine);
+			result = deck.Discard(seven, nine);
+			Assert.Count(deck, 20);
+			Assert.Count(result.Pile, 20);
+			Assert.Empty(result.Discarded);
+			Assert.Count(result.NotFound, 2);
+			Assert.Contains(result.NotFound, seven);
+			Assert.Contains(result.NotFound, nine);
+
+			result = deck.Discard(ReallyBadComparer.Instance, seven, nine, Card.Joker);
+			Assert.Count(deck, 20);
+			Assert.Count(result.Pile, 19);
+			Assert.Count(result.Discarded, 1);
+			Assert.Contains(result.Discarded, eight);
+			Assert.Count(result.NotFound, 2);
+			Assert.Contains(result.NotFound, seven);
+			Assert.Contains(result.NotFound, nine);
+
+			deck = eight.GenerateImmutable(20).Append(seven);
+			result = deck.Discard(seven.Generate(5));
+			Assert.Count(deck, 21);
+			Assert.Count(result.Pile, 20);
+			Assert.Count(result.Discarded, 1);
+			Assert.Contains(result.Discarded, seven);
+			Assert.Count(result.NotFound, 4);
+			Assert.All(result.NotFound, v => v == seven);
 		}
 
 		[TestMethod]
@@ -964,6 +1017,79 @@ namespace BoringCardLib.Tests {
 			Assert.False(deck.Contains(card, ReallyBadComparer.Instance));
 		}
 
+		[TestMethod]
+		public void CountOf() {
+			var deck = ImmutableCardSet.MakeStandardDeck();
+			var suit = ImmutableCardSet.MakeFullSuit(Suit.Clubs);
+			var rank = ImmutableCardSet.MakeFullRank(Rank.Four);
+
+			Assert.ThrowsExact<ArgumentException>(() => deck.GetMatches((Suit)(-1)));
+			Assert.ThrowsExact<ArgumentException>(() => deck.GetMatches((Rank)(-1)));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.GetMatches(null));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.GetMatches(Card.Joker, null));
+
+			Assert.Equal(suit.Count, deck.CountOf(Suit.Clubs));
+			deck = deck.Discard(new DiscardRequest(suit: Suit.Clubs)).Pile;
+			Assert.Equal(0, deck.CountOf(Suit.Clubs));
+
+			deck = ImmutableCardSet.MakeStandardDeck();
+			Assert.Equal(rank.Count, deck.CountOf(Rank.Four));
+			deck = deck.Discard(new DiscardRequest(quantity: 2, rank: Rank.Four)).Pile;
+			Assert.Equal(2, deck.CountOf(Rank.Four));
+
+			var aceHearts = new Card(Suit.Hearts, Rank.Ace);
+			deck = ImmutableCardSet.MakeStandardDeck();
+			Assert.Equal(1, deck.CountOf(aceHearts));
+			deck = deck.Discard(aceHearts).Pile;
+			Assert.Equal(0, deck.CountOf(aceHearts));
+
+			deck = ImmutableCardSet.MakeStandardDeck();
+			Assert.Equal(0, deck.CountOf(aceHearts, ReallyBadComparer.Instance));
+			Assert.Equal(Constant.StandardDeckSize, deck.CountOf(Card.Joker, ReallyBadComparer.Instance));
+		}
+
+		[TestMethod]
+		public void GetMatches() {
+			var deck = ImmutableCardSet.MakeStandardDeck();
+			var suit = ImmutableCardSet.MakeFullSuit(Suit.Clubs);
+			var rank = ImmutableCardSet.MakeFullRank(Rank.Four);
+
+			Assert.ThrowsExact<ArgumentException>(() => deck.GetMatches((Suit)(-1)));
+			Assert.ThrowsExact<ArgumentException>(() => deck.GetMatches((Rank)(-1)));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.GetMatches(null));
+			Assert.ThrowsExact<ArgumentNullException>(() => deck.GetMatches(Card.Joker, null));
+
+			var matches = deck.GetMatches(Suit.Clubs);
+			Assert.OverlapCount(matches, suit, Constant.StandardSuitSize);
+
+			deck = deck.Discard(matches).Pile;
+			matches = deck.GetMatches(Suit.Clubs);
+			Assert.Empty(matches);
+
+			deck = ImmutableCardSet.MakeStandardDeck();
+			matches = deck.GetMatches(Rank.Four);
+			Assert.OverlapCount(matches, rank, Constant.StandardSuitCount);
+
+			deck = deck.Discard(matches.Skip(2)).Pile;
+			matches = deck.GetMatches(Rank.Four);
+			Assert.Count(matches, 2);
+
+			deck = ImmutableCardSet.MakeStandardDeck();
+			matches = deck.GetMatches(new Card(Suit.Hearts, Rank.Ace));
+			Assert.Count(matches, 1);
+
+			deck = deck.Discard(matches).Pile;
+			matches = deck.GetMatches(new Card(Suit.Hearts, Rank.Ace));
+			Assert.Empty(matches);
+
+			deck = ImmutableCardSet.MakeStandardDeck();
+			matches = deck.GetMatches(new Card(Suit.Hearts, Rank.Ace), ReallyBadComparer.Instance);
+			Assert.Empty(matches);
+
+			matches = deck.GetMatches(Card.Joker, ReallyBadComparer.Instance);
+			Assert.Count(matches, Constant.StandardDeckSize);
+		}
+	
 		[TestMethod]
 		public void IndexOf() {
 			var deck = ImmutableCardSet.MakeStandardDeck();

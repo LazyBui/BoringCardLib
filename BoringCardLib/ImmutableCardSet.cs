@@ -44,7 +44,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
 		public ImmutableCardSet(IEnumerable<Card> cards) {
 			cards.ThrowIfNullOrContainsNulls(nameof(cards));
-			mCards = new CardSet(cards);		
+			mCards = new CardSet(cards);
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace BoringCardLib {
 		public ImmutableCardSet(int capacity, IEnumerable<Card> cards) {
 			capacity.ThrowIfZeroOrLess(nameof(capacity));
 			cards.ThrowIfNullOrContainsNulls(nameof(cards));
-			mCards = new CardSet(capacity, cards);		
+			mCards = new CardSet(capacity, cards);
 		}
 
 		/// <summary>
@@ -283,6 +283,90 @@ namespace BoringCardLib {
 		}
 
 		/// <summary>
+		/// Counts how many instances of the specified <see cref="Card" /> are in the current set using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <returns>The count of instances that match <paramref name="card" />.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		public int CountOf(Card card) {
+			return mCards.CountOf(card, DefaultCardComparer.Instance);
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Card" /> are in the current set using the specified <see cref="IEqualityComparer{T}" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <returns>The count of instances that match <paramref name="card" />.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		public int CountOf(Card card, IEqualityComparer<Card> comparer) {
+			return mCards.CountOf(card, comparer);
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Suit" /> are in the current set.
+		/// </summary>
+		/// <param name="rank">The suit to check for.</param>
+		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public int CountOf(Suit suit) {
+			return mCards.CountOf(suit);
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Rank" /> are in the current set.
+		/// </summary>
+		/// <param name="rank">The rank to check for.</param>
+		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public int CountOf(Rank rank) {
+			return mCards.CountOf(rank);
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Card" /> using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <returns>true if the current set of cards contains <paramref name="card" />, otherwise false.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		public ImmutableCardSet GetMatches(Card card) {
+			return mCards.GetMatches(card).AsImmutable();
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Card" /> using a specified <see cref="IEqualityComparer{T}" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <returns>All cards that match <paramref name="card" /> in the current set.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		public ImmutableCardSet GetMatches(Card card, IEqualityComparer<Card> comparer) {
+			return mCards.GetMatches(card, comparer).AsImmutable();
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Suit" />.
+		/// </summary>
+		/// <param name="suit">The suit to check for.</param>
+		/// <returns>All cards that match the specified suit.</returns>
+		/// <exception cref="ArgumentException"><paramref name="suit" /> is invalid.</exception>
+		public ImmutableCardSet GetMatches(Suit suit) {
+			return mCards.GetMatches(suit).AsImmutable();
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Rank" />.
+		/// </summary>
+		/// <param name="rank">The rank to check for.</param>
+		/// <returns>All cards that match the specified rank.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public ImmutableCardSet GetMatches(Rank rank) {
+			return mCards.GetMatches(rank).AsImmutable();
+		}
+
+		/// <summary>
 		/// Searches for the specified <see cref="Card" /> and returns a zero-based index of the first matched card using a <see cref="DefaultCardComparer" />.
 		/// </summary>
 		/// <param name="card">The card to check for.</param>
@@ -432,12 +516,25 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Returns an <see cref="ImmutableDiscardResult" /> with the result of the operation using a <see cref="DefaultCardComparer" />.
 		/// </summary>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="cards">The cards to remove.</param>
 		/// <returns>a new <see cref="ImmutableDiscardResult" /> instance with the result of the operation.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
-		public ImmutableDiscardResult Discard(Card card) {
-			card.ThrowIfNull(nameof(card));
-			return Discard(DefaultCardComparer.Instance, new DiscardRequest(quantity: 1, card: card));
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public ImmutableDiscardResult Discard(params Card[] cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(DefaultCardComparer.Instance, new DiscardRequest(cards: cards));
+		}
+
+		/// <summary>
+		/// Returns an <see cref="ImmutableDiscardResult" /> with the result of the operation using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="cards">The cards to remove.</param>
+		/// <returns>a new <see cref="ImmutableDiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public ImmutableDiscardResult Discard(IEnumerable<Card> cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(DefaultCardComparer.Instance, new DiscardRequest(cards: cards));
 		}
 
 		/// <summary>
@@ -468,13 +565,28 @@ namespace BoringCardLib {
 		/// Returns an <see cref="ImmutableDiscardResult" /> with the result of the operation using the specified <see cref="IEqualityComparer{Card}" />.
 		/// </summary>
 		/// <param name="comparer">The comparer to check with.</param>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="cards">The cards to remove.</param>
 		/// <returns>a new <see cref="ImmutableDiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
-		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
-		public ImmutableDiscardResult Discard(IEqualityComparer<Card> comparer, Card card) {
-			card.ThrowIfNull(nameof(card));
-			return Discard(comparer, new DiscardRequest(quantity: 1, card: card));
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public ImmutableDiscardResult Discard(IEqualityComparer<Card> comparer, params Card[] cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(comparer, new DiscardRequest(cards: cards));
+		}
+
+		/// <summary>
+		/// Returns an <see cref="ImmutableDiscardResult" /> with the result of the operation using the specified <see cref="IEqualityComparer{Card}" />.
+		/// </summary>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <param name="cards">The cards to remove.</param>
+		/// <returns>a new <see cref="ImmutableDiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public ImmutableDiscardResult Discard(IEqualityComparer<Card> comparer, IEnumerable<Card> cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(comparer, new DiscardRequest(cards: cards));
 		}
 
 		/// <summary>

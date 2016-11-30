@@ -203,11 +203,12 @@ namespace BoringCardLib {
 		/// <param name="cards">The cards to add to the set.</param>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Prepend(IEnumerable<Card> cards) {
+		public CardSet Prepend(IEnumerable<Card> cards) {
 			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
 			for (int i = cards.Count() - 1; i >= 0; i--) {
 				mCards.Insert(0, cards.ElementAt(i));
 			}
+			return this;
 		}
 
 		/// <summary>
@@ -216,8 +217,8 @@ namespace BoringCardLib {
 		/// <param name="cards">The cards to add to the set.</param>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Prepend(params Card[] cards) {
-			Prepend(cards as IEnumerable<Card>);
+		public CardSet Prepend(params Card[] cards) {
+			return Prepend(cards as IEnumerable<Card>);
 		}
 
 		/// <summary>
@@ -226,9 +227,10 @@ namespace BoringCardLib {
 		/// <param name="cards">The cards to add to the set.</param>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Append(IEnumerable<Card> cards) {
+		public CardSet Append(IEnumerable<Card> cards) {
 			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
 			mCards.AddRange(cards.ToList());
+			return this;
 		}
 
 		/// <summary>
@@ -237,8 +239,8 @@ namespace BoringCardLib {
 		/// <param name="cards">The cards to add to the set.</param>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Append(params Card[] cards) {
-			Append(cards as IEnumerable<Card>);
+		public CardSet Append(params Card[] cards) {
+			return Append(cards as IEnumerable<Card>);
 		}
 
 		/// <summary>
@@ -249,7 +251,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="index" /> is not in the range [0, <see cref="Count" />].</exception>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Insert(int index, IEnumerable<Card> cards) {
+		public CardSet Insert(int index, IEnumerable<Card> cards) {
 			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
 			index.ThrowIfOutsideRange(0, Count, nameof(index));
 			mCards =
@@ -257,6 +259,7 @@ namespace BoringCardLib {
 				Concat(cards).
 				Concat(mCards.Skip(index)).
 				ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -267,8 +270,8 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="index" /> is not in the range [0, <see cref="Count" />].</exception>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
-		public void Insert(int index, params Card[] cards) {
-			Insert(index, cards as IEnumerable<Card>);
+		public CardSet Insert(int index, params Card[] cards) {
+			return Insert(index, cards as IEnumerable<Card>);
 		}
 
 		/// <summary>
@@ -276,8 +279,8 @@ namespace BoringCardLib {
 		/// </summary>
 		/// <param name="times">The quantity of times to shuffle.</param>
 		/// <exception cref="ArgumentException"><paramref name="times" /> is 0 or less.</exception>
-		public void Shuffle(int times = 1) {
-			Shuffle(new DefaultRandomSource(), times: times);
+		public CardSet Shuffle(int times = 1) {
+			return Shuffle(new DefaultRandomSource(), times: times);
 		}
 
 		/// <summary>
@@ -287,7 +290,7 @@ namespace BoringCardLib {
 		/// <param name="times">The quantity of times to shuffle.</param>
 		/// <exception cref="ArgumentException"><paramref name="times" /> is 0 or less.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="sampler" /> is null.</exception>
-		public void Shuffle(IRandomSource sampler, int times = 1) {
+		public CardSet Shuffle(IRandomSource sampler, int times = 1) {
 			sampler.ThrowIfNull(nameof(sampler));
 			times.ThrowIfZeroOrLess(nameof(times));
 
@@ -300,6 +303,7 @@ namespace BoringCardLib {
 					mCards[r] = temp;
 				}
 			} while (--times > 0);
+			return this;
 		}
 
 		/// <summary>
@@ -334,7 +338,7 @@ namespace BoringCardLib {
 			card.ThrowIfNull(nameof(card));
 			return mCards.Contains(card);
 		}
-		
+
 		/// <summary>
 		/// Determines whether the current set of cards has the specified <see cref="Card" /> using a specified <see cref="IEqualityComparer{T}" />.
 		/// </summary>
@@ -348,7 +352,118 @@ namespace BoringCardLib {
 			comparer.ThrowIfNull(nameof(comparer));
 			return mCards.Contains(card, comparer);
 		}
-		
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Card" /> are in the current set using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <returns>The count of instances that match <paramref name="card" />.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		public int CountOf(Card card) {
+			return CountOf(card, DefaultCardComparer.Instance);
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Card" /> are in the current set using the specified <see cref="IEqualityComparer{T}" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <returns>The count of instances that match <paramref name="card" />.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		public int CountOf(Card card, IEqualityComparer<Card> comparer) {
+			card.ThrowIfNull(nameof(card));
+			comparer.ThrowIfNull(nameof(comparer));
+			int count = 0;
+			for (int i = 0; i < Count; i++) {
+				if (comparer.Equals(mCards[i], card)) {
+					count++;
+				}
+			}
+			return count;
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Suit" /> are in the current set.
+		/// </summary>
+		/// <param name="rank">The suit to check for.</param>
+		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public int CountOf(Suit suit) {
+			suit.ThrowIfInvalid(nameof(suit));
+			int count = 0;
+			for (int i = 0; i < Count; i++) {
+				if (mCards[i].Suit == suit) {
+					count++;
+				}
+			}
+			return count;
+		}
+
+		/// <summary>
+		/// Counts how many instances of the specified <see cref="Rank" /> are in the current set.
+		/// </summary>
+		/// <param name="rank">The rank to check for.</param>
+		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public int CountOf(Rank rank) {
+			rank.ThrowIfInvalid(nameof(rank));
+			int count = 0;
+			for (int i = 0; i < Count; i++) {
+				if (mCards[i].Rank == rank) {
+					count++;
+				}
+			}
+			return count;
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Card" /> using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <returns>true if the current set of cards contains <paramref name="card" />, otherwise false.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		public CardSet GetMatches(Card card) {
+			card.ThrowIfNull(nameof(card));
+			return new CardSet(mCards.Where(c => DefaultCardComparer.Instance.Equals(c, card)));
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Card" /> using a specified <see cref="IEqualityComparer{T}" />.
+		/// </summary>
+		/// <param name="card">The card to check for.</param>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <returns>All cards that match <paramref name="card" /> in the current set.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		public CardSet GetMatches(Card card, IEqualityComparer<Card> comparer) {
+			card.ThrowIfNull(nameof(card));
+			comparer.ThrowIfNull(nameof(comparer));
+			return new CardSet(mCards.Where(c => comparer.Equals(c, card)));
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Suit" />.
+		/// </summary>
+		/// <param name="suit">The suit to check for.</param>
+		/// <returns>All cards that match the specified suit.</returns>
+		/// <exception cref="ArgumentException"><paramref name="suit" /> is invalid.</exception>
+		public CardSet GetMatches(Suit suit) {
+			suit.ThrowIfInvalid(nameof(suit));
+			return new CardSet(mCards.Where(c => c.Suit == suit));
+		}
+
+		/// <summary>
+		/// Retrieves all cards in the current set of cards that match the specified <see cref="Rank" />.
+		/// </summary>
+		/// <param name="rank">The rank to check for.</param>
+		/// <returns>All cards that match the specified rank.</returns>
+		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		public CardSet GetMatches(Rank rank) {
+			rank.ThrowIfInvalid(nameof(rank));
+			return new CardSet(mCards.Where(c => c.Rank == rank));
+		}
+
 		/// <summary>
 		/// Searches for the specified <see cref="Card" /> and returns a zero-based index of the first matched card using a <see cref="DefaultCardComparer" />.
 		/// </summary>
@@ -530,14 +645,27 @@ namespace BoringCardLib {
 		}
 
 		/// <summary>
-		/// Removes the first instance of the specified card from the set using a <see cref="DefaultCardComparer" />.
+		/// Removes the first instance of the specified card(s) from the set using a <see cref="DefaultCardComparer" />.
+		/// </summary>
+		/// <param name="cards">The cards to remove.</param>
+		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public DiscardResult Discard(params Card[] cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(DefaultCardComparer.Instance, new DiscardRequest(cards: cards));
+		}
+
+		/// <summary>
+		/// Removes all of the specified cards from the set using a <see cref="DefaultCardComparer" />.
 		/// </summary>
 		/// <param name="card">The card to remove.</param>
 		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
-		public DiscardResult Discard(Card card) {
-			card.ThrowIfNull(nameof(card));
-			return Discard(DefaultCardComparer.Instance, new DiscardRequest(quantity: 1, card: card));
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public DiscardResult Discard(IEnumerable<Card> cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(DefaultCardComparer.Instance, new DiscardRequest(cards: cards));
 		}
 
 		/// <summary>
@@ -565,16 +693,31 @@ namespace BoringCardLib {
 		}
 
 		/// <summary>
-		/// Removes the first instance of the specified card from the set using the specified <see cref="IEqualityComparer{Card}" />.
+		/// Removes the first instance of the specified card(s) from the set using the specified <see cref="IEqualityComparer{Card}" />.
+		/// </summary>
+		/// <param name="comparer">The comparer to check with.</param>
+		/// <param name="cards">The cards to remove.</param>
+		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public DiscardResult Discard(IEqualityComparer<Card> comparer, params Card[] cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(comparer, new DiscardRequest(cards: cards));
+		}
+
+		/// <summary>
+		/// Removes all of the specified cards from the set using a <see cref="DefaultCardComparer" />.
 		/// </summary>
 		/// <param name="comparer">The comparer to check with.</param>
 		/// <param name="card">The card to remove.</param>
 		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
+		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
-		/// <exception cref="ArgumentNullException"><paramref name="card" /> is null.</exception>
-		public DiscardResult Discard(IEqualityComparer<Card> comparer, Card card) {
-			card.ThrowIfNull(nameof(card));
-			return Discard(comparer, new DiscardRequest(quantity: 1, card: card));
+		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
+		public DiscardResult Discard(IEqualityComparer<Card> comparer, IEnumerable<Card> cards) {
+			cards.ThrowIfNullOrEmptyOrContainsNulls(nameof(cards));
+			return Discard(comparer, new DiscardRequest(cards: cards));
 		}
 
 		/// <summary>
@@ -623,25 +766,25 @@ namespace BoringCardLib {
 
 					switch (request.Direction) {
 						case Direction.FirstToLast: {
-							int i = request.Offset;
-							do {
-								result.Add(mCards[i]);
-								mCards.RemoveAt(i);
-								i += request.Skip;
-								discarded++;
-							} while (i < mCards.Count && discarded < quantity);
-							break;
-						}
+								int i = request.Offset;
+								do {
+									result.Add(mCards[i]);
+									mCards.RemoveAt(i);
+									i += request.Skip;
+									discarded++;
+								} while (i < mCards.Count && discarded < quantity);
+								break;
+							}
 						case Direction.LastToFirst: {
-							int i = mCards.Count - 1 - request.Offset;
-							do {
-								result.Add(mCards[i]);
-								mCards.RemoveAt(i);
-								i -= (request.Skip + 1);
-								discarded++;
-							} while (i >= 0 && discarded < quantity);
-							break;
-						}
+								int i = mCards.Count - 1 - request.Offset;
+								do {
+									result.Add(mCards[i]);
+									mCards.RemoveAt(i);
+									i -= (request.Skip + 1);
+									discarded++;
+								} while (i >= 0 && discarded < quantity);
+								break;
+							}
 						default: throw new NotImplementedException();
 					}
 				}
@@ -832,7 +975,7 @@ namespace BoringCardLib {
 				mCards.Clear();
 			}
 			else {
-				mCards = mCards.Skip(Count - remainder).ToList(); 
+				mCards = mCards.Skip(Count - remainder).ToList();
 			}
 
 			return new DistributeResult(groups.AsReadOnly());
@@ -871,8 +1014,9 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Reverses the ordering of the cards in the set.
 		/// </summary>
-		public void Reverse() {
+		public CardSet Reverse() {
 			mCards = mCards.Reverse<Card>().ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -890,7 +1034,7 @@ namespace BoringCardLib {
 		/// <param name="direction">The direction of the sort.</param>
 		/// <exception cref="ArgumentException"><paramref name="direction" /> is invalid.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
-		public void Sort(IComparer<Card> comparer, SortDirection direction = SortDirection.Ascending) {
+		public CardSet Sort(IComparer<Card> comparer, SortDirection direction = SortDirection.Ascending) {
 			comparer.ThrowIfNull(nameof(comparer));
 			direction.ThrowIfInvalid(nameof(direction));
 			IEnumerable<Card> intermediate = mCards;
@@ -906,6 +1050,7 @@ namespace BoringCardLib {
 			}
 
 			mCards = intermediate.ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -915,7 +1060,7 @@ namespace BoringCardLib {
 		/// <param name="direction">The direction of the sort.</param>
 		/// <exception cref="ArgumentException"><paramref name="direction" /> is invalid.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="sort" /> is null.</exception>
-		public void Sort<TResult>(Func<Card, TResult> sort, SortDirection direction = SortDirection.Ascending) {
+		public CardSet Sort<TResult>(Func<Card, TResult> sort, SortDirection direction = SortDirection.Ascending) {
 			sort.ThrowIfNull(nameof(sort));
 			direction.ThrowIfInvalid(nameof(direction));
 			IEnumerable<Card> intermediate = mCards;
@@ -931,6 +1076,7 @@ namespace BoringCardLib {
 			}
 
 			mCards = intermediate.ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -940,7 +1086,7 @@ namespace BoringCardLib {
 		/// <param name="direction">The direction of the sort.</param>
 		/// <exception cref="ArgumentException"><paramref name="direction" /> is invalid.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="sort" /> is null.</exception>
-		public void Sort<TResult>(Func<Card, int, TResult> sort, SortDirection direction = SortDirection.Ascending) {
+		public CardSet Sort<TResult>(Func<Card, int, TResult> sort, SortDirection direction = SortDirection.Ascending) {
 			sort.ThrowIfNull(nameof(sort));
 			direction.ThrowIfInvalid(nameof(direction));
 			var intermediate = mCards.Select((c, i) => new { Index = i, Card = c });
@@ -958,6 +1104,7 @@ namespace BoringCardLib {
 			mCards = intermediate.
 				Select(c => c.Card).
 				ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -969,7 +1116,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="direction" /> is invalid.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="sort" /> is null.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
-		public void Sort<TResult>(Func<Card, TResult> sort, IComparer<TResult> comparer, SortDirection direction = SortDirection.Ascending) {
+		public CardSet Sort<TResult>(Func<Card, TResult> sort, IComparer<TResult> comparer, SortDirection direction = SortDirection.Ascending) {
 			sort.ThrowIfNull(nameof(sort));
 			comparer.ThrowIfNull(nameof(comparer));
 			direction.ThrowIfInvalid(nameof(direction));
@@ -986,6 +1133,7 @@ namespace BoringCardLib {
 			}
 
 			mCards = intermediate.ToList();
+			return this;
 		}
 
 		/// <summary>
@@ -997,7 +1145,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="direction" /> is invalid.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="sort" /> is null.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>
-		public void Sort<TResult>(Func<Card, int, TResult> sort, IComparer<TResult> comparer, SortDirection direction = SortDirection.Ascending) {
+		public CardSet Sort<TResult>(Func<Card, int, TResult> sort, IComparer<TResult> comparer, SortDirection direction = SortDirection.Ascending) {
 			sort.ThrowIfNull(nameof(sort));
 			comparer.ThrowIfNull(nameof(comparer));
 			direction.ThrowIfInvalid(nameof(direction));
@@ -1016,6 +1164,7 @@ namespace BoringCardLib {
 			mCards = intermediate.
 				Select(c => c.Card).
 				ToList();
+			return this;
 		}
 
 		/// <summary>
