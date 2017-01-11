@@ -25,6 +25,7 @@ namespace BoringCardLib {
 		/// </summary>
 		/// <param name="pile">The new set of cards without the discarded cards.</param>
 		/// <param name="discarded">The cards that were discarded.</param>
+		/// <param name="notFound">The cards that were not found in the pile.</param>
 		/// <exception cref="ArgumentException"><paramref name="pile" /> contains nulls.</exception>
 		/// <exception cref="ArgumentException"><paramref name="discarded" /> contains nulls.</exception>
 		/// <exception cref="ArgumentException"><paramref name="notFound" /> contains nulls.</exception>

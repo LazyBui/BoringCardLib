@@ -77,6 +77,9 @@ namespace BoringCardLib {
 		// }
 
 		// This code added to correctly implement the disposable pattern.
+		/// <summary>
+		/// Releases the resources used by the <see cref="DefaultRandomSource" />.
+		/// </summary>
 		public void Dispose() {
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);

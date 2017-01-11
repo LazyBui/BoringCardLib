@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Provides some utility methods for <see cref="Suit" />.
+	/// </summary>
 	public static partial class SuitExtensions {
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is a black suit.

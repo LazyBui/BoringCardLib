@@ -6,6 +6,9 @@ namespace BoringCardLib {
 	/// Represents a default comparer for the <see cref="Card" /> class.
 	/// </summary>
 	public sealed class DefaultCardComparer : IComparer<Card>, IEqualityComparer<Card> {
+		/// <summary>
+		/// An instance of the default comparer.
+		/// </summary>
 		public static readonly DefaultCardComparer Instance = new DefaultCardComparer();
 
 		/// <summary>

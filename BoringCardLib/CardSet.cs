@@ -386,9 +386,9 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Counts how many instances of the specified <see cref="Suit" /> are in the current set.
 		/// </summary>
-		/// <param name="rank">The suit to check for.</param>
-		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
-		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		/// <param name="suit">The suit to check for.</param>
+		/// <returns>The count of instances that match <paramref name="suit" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="suit" /> is invalid.</exception>
 		public int CountOf(Suit suit) {
 			suit.ThrowIfInvalid(nameof(suit));
 			int count = 0;
@@ -659,7 +659,7 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Removes all of the specified cards from the set using a <see cref="DefaultCardComparer" />.
 		/// </summary>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="cards">The cards to remove.</param>
 		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>
@@ -671,7 +671,7 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Removes the specified quantity of cards from the set based on <paramref name="direction" />.
 		/// </summary>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="quantity">The number of cards to remove.</param>
 		/// <param name="direction">The direction that the set should be iterated.</param>
 		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
 		/// <exception cref="ArgumentException"><paramref name="quantity" /> is 0 or less.</exception>
@@ -710,7 +710,7 @@ namespace BoringCardLib {
 		/// Removes all of the specified cards from the set using a <see cref="DefaultCardComparer" />.
 		/// </summary>
 		/// <param name="comparer">The comparer to check with.</param>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="cards">The cards to remove.</param>
 		/// <returns>A <see cref="DiscardResult" /> instance with the result of the operation.</returns>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> is empty or contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="comparer" /> is null.</exception>

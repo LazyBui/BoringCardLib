@@ -20,6 +20,7 @@ namespace BoringCardLib {
 		/// Initializes a new instance of the <see cref="DiscardResult" /> class.
 		/// </summary>
 		/// <param name="cards">The cards that were discarded.</param>
+		/// <param name="notFound">The cards that were not found in the pile.</param>
 		/// <exception cref="ArgumentException"><paramref name="cards" /> contains nulls.</exception>
 		/// <exception cref="ArgumentException"><paramref name="notFound" /> contains nulls.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="cards" /> is null.</exception>

@@ -21,7 +21,7 @@ namespace BoringCardLib {
 		/// </summary>
 		public DistributionPolicy Distribution { get; private set; }
 		/// <summary>
-		/// Indicates what should be done about the remainder if the number of cards is not evenly divisible into <paramref name="numberOfPiles" />.
+		/// Indicates what should be done about the remainder if the number of cards is not evenly divisible into <see cref="Piles" />.
 		/// </summary>
 		public RemainderPolicy Remainder { get; private set; }
 
@@ -29,11 +29,11 @@ namespace BoringCardLib {
 		/// Initializes a new instance of the <see cref="DistributeRequest" /> class.
 		/// </summary>
 		/// <param name="numberOfPiles">How many piles there should be without factoring remainder.</param>
-		/// <param name="cards">How many cards there should be in a pile without factoring remainder.</param>
+		/// <param name="numberOfCards">How many cards there should be in a pile without factoring remainder.</param>
 		/// <param name="distributionPolicy">Indicates how the operation should handle distribution.</param>
 		/// <param name="remainderPolicy">Indicates what should be done about the remainder if the number of cards is not evenly divisible into <paramref name="numberOfPiles" />.</param>
 		/// <exception cref="ArgumentException"><paramref name="numberOfPiles" /> is 1 or less.</exception>
-		/// <exception cref="ArgumentException"><paramref name="cards" /> is 0 or less.</exception>
+		/// <exception cref="ArgumentException"><paramref name="numberOfCards" /> is 0 or less.</exception>
 		/// <exception cref="ArgumentException"><paramref name="distributionPolicy" /> is invalid.</exception>
 		/// <exception cref="ArgumentException"><paramref name="remainderPolicy" /> is invalid.</exception>
 		[DebuggerStepThrough]

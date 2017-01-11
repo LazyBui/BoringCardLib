@@ -262,6 +262,7 @@ namespace BoringCardLib {
 				All();
 		}
 
+#pragma warning disable 1591
 		public static bool operator ==(Card lhs, Card rhs) {
 			return Operators.Equals(lhs, rhs);
 		}
@@ -269,5 +270,6 @@ namespace BoringCardLib {
 		public static bool operator !=(Card lhs, Card rhs) {
 			return Operators.NotEquals(lhs, rhs);
 		}
+#pragma warning restore 1591
 	}
 }

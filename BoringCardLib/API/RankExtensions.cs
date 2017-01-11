@@ -2,6 +2,9 @@
 using System.Linq;
 
 namespace BoringCardLib {
+	/// <summary>
+	/// Provides some utility methods for <see cref="Rank" />.
+	/// </summary>
 	public static partial class RankExtensions {
 		private static readonly Rank[] sFaceRanks = new[] {
 			Rank.Jack,

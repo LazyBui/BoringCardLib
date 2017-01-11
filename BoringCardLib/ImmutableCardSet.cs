@@ -307,9 +307,9 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Counts how many instances of the specified <see cref="Suit" /> are in the current set.
 		/// </summary>
-		/// <param name="rank">The suit to check for.</param>
-		/// <returns>The count of instances that match <paramref name="rank" />.</returns>
-		/// <exception cref="ArgumentException"><paramref name="rank" /> is invalid.</exception>
+		/// <param name="suit">The suit to check for.</param>
+		/// <returns>The count of instances that match <paramref name="suit" />.</returns>
+		/// <exception cref="ArgumentException"><paramref name="suit" /> is invalid.</exception>
 		public int CountOf(Suit suit) {
 			return mCards.CountOf(suit);
 		}
@@ -540,7 +540,7 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Returns an <see cref="ImmutableDiscardResult" /> with the result of the operation.
 		/// </summary>
-		/// <param name="card">The card to remove.</param>
+		/// <param name="quantity">The number of cards to remove.</param>
 		/// <param name="direction">The direction that the set should be iterated.</param>
 		/// <returns>a new <see cref="ImmutableDiscardResult" /> instance with the result of the operation.</returns>
 		/// <exception cref="ArgumentException"><paramref name="quantity" /> is 0 or less.</exception>
