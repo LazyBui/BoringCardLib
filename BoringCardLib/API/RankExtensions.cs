@@ -28,7 +28,7 @@ namespace BoringCardLib {
 		/// <returns>true if <paramref name="this"/> is <see cref="Rank.Ace" />, <see cref="Rank.Two" />, <see cref="Rank.Three" />, <see cref="Rank.Four" />, <see cref="Rank.Five" />, <see cref="Rank.Six" />, <see cref="Rank.Seven" />, <see cref="Rank.Eight" />, <see cref="Rank.Nine" />, or <see cref="Rank.Ten" />. Otherwise, it returns false.</returns>
 		public static bool IsPipRank(this Rank @this) {
 			return
-				EnumExt<Rank>.IsDefined(@this) &&
+				Enum.IsDefined(typeof(Rank), @this) &&
 				!IsFaceRank(@this) &&
 				@this != Rank.Joker;
 		}

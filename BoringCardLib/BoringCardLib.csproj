@@ -58,9 +58,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EnumLib">
-      <HintPath>..\EnumLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +93,7 @@
     <Compile Include="API\Suit.cs" />
     <Compile Include="Random\SeededRandomSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\ThrowExtensions.Enum.cs" />
     <Compile Include="Util\ThrowExtensions.Null.cs" />
     <Compile Include="Util\ThrowExtensions.NumberBelow.cs" />
     <Compile Include="Util\ThrowExtensions.NumberBelowOrEqual.cs" />
