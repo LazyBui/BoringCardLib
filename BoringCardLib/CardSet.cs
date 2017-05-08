@@ -34,18 +34,18 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Indicates whether there are any cards in the set.
 		/// </summary>
-		public bool AnyCards { get { return Count > 0; } }
+		public bool AnyCards => Count > 0;
 		/// <summary>
 		/// Indicates whether how many cards in the set.
 		/// </summary>
-		public int Count { get { return mCards.Count; } }
+		public int Count => mCards.Count;
 		/// <summary>
 		/// Gets the first card of the set.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card First {
 			get {
-				if (Count == 0) throw new InvalidOperationException("Must have cards to view the first");
+				if (mCards.Count == 0) throw new InvalidOperationException("Must have cards to view the first");
 				return mCards[0];
 			}
 		}
@@ -55,7 +55,7 @@ namespace BoringCardLib {
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card Last {
 			get {
-				if (Count == 0) throw new InvalidOperationException("Must have cards to view the last");
+				if (mCards.Count == 0) throw new InvalidOperationException("Must have cards to view the last");
 				return mCards[mCards.Count - 1];
 			}
 		}
@@ -65,7 +65,7 @@ namespace BoringCardLib {
 		/// <param name="index">The zero-based index of the element to get.</param>
 		/// <returns>The element at the specified zero-based index.</returns>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is not in the range [0, <see cref="Count" />).</exception>
-		public Card this[int index] { get { return mCards[index]; } }
+		public Card this[int index] => mCards[index];
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CardSet" /> class.

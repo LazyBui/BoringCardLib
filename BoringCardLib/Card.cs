@@ -26,44 +26,44 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Indicates whether the card has a point value.
 		/// </summary>
-		public bool HasValue { get { return Value.HasValue; } }
+		public bool HasValue => Value.HasValue;
 
 		/// <summary>
 		/// Indicates whether the <see cref="Rank" /> is a pip rank.
 		/// </summary>
-		public bool IsPipCard { get { return Rank.IsPipRank(); } }
+		public bool IsPipCard => Rank.IsPipRank();
 		/// <summary>
 		/// Indicates whether the <see cref="Rank" /> is a face rank.
 		/// </summary>
-		public bool IsFaceCard { get { return Rank.IsFaceRank(); } }
+		public bool IsFaceCard => Rank.IsFaceRank();
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is a black suit.
 		/// </summary>
-		public bool IsBlackSuit { get { return Suit.IsBlackSuit(); } }
+		public bool IsBlackSuit => Suit.IsBlackSuit();
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is a red suit.
 		/// </summary>
-		public bool IsRedSuit { get { return Suit.IsRedSuit(); } }
+		public bool IsRedSuit => Suit.IsRedSuit();
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is <see cref="Suit.Hearts" />.
 		/// </summary>
-		public bool IsHeart { get { return Suit == Suit.Hearts; } }
+		public bool IsHeart => Suit == Suit.Hearts;
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is <see cref="Suit.Spades" />.
 		/// </summary>
-		public bool IsSpade { get { return Suit == Suit.Spades; } }
+		public bool IsSpade => Suit == Suit.Spades;
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is <see cref="Suit.Clubs" />.
 		/// </summary>
-		public bool IsClub { get { return Suit == Suit.Clubs; } }
+		public bool IsClub => Suit == Suit.Clubs;
 		/// <summary>
 		/// Indicates whether the <see cref="Suit" /> is <see cref="Suit.Diamonds" />.
 		/// </summary>
-		public bool IsDiamond { get { return Suit == Suit.Diamonds; } }
+		public bool IsDiamond => Suit == Suit.Diamonds;
 		/// <summary>
 		/// Indicates whether the card is a joker.
 		/// </summary>
-		public bool IsJoker { get { return Suit == Suit.Joker; } }
+		public bool IsJoker => Suit == Suit.Joker;
 
 		/// <summary>
 		/// Represents a joker card.

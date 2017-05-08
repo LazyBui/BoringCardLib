@@ -13,28 +13,28 @@ namespace BoringCardLib {
 		/// <summary>
 		/// Indicates whether there are any cards in the set.
 		/// </summary>
-		public bool AnyCards { get { return Count > 0; } }
+		public bool AnyCards => Count > 0;
 		/// <summary>
 		/// Indicates whether how many cards in the set.
 		/// </summary>
-		public int Count { get { return mCards.Count; } }
+		public int Count => mCards.Count;
 		/// <summary>
 		/// Gets the first card of the set.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
-		public Card First { get { return mCards.First; } }
+		public Card First => mCards.First;
 		/// <summary>
 		/// Gets the last card of the set.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
-		public Card Last { get { return mCards.Last; } }
+		public Card Last => mCards.Last;
 		/// <summary>
 		/// Gets the element at the specified zero-based index.
 		/// </summary>
 		/// <param name="index">The zero-based index of the element to get.</param>
 		/// <returns>The element at the specified zero-based index.</returns>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is not in the range [0, <see cref="Count" />).</exception>
-		public Card this[int index] { get { return mCards[index]; } }
+		public Card this[int index] => mCards[index];
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImmutableCardSet" /> class.
