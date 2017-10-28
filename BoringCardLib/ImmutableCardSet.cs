@@ -397,7 +397,7 @@ namespace BoringCardLib {
 		/// <returns>An <see cref="ImmutableDrawSingleResult" /> instance representing the result of the draw operation.</returns>
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public ImmutableDrawSingleResult Draw() {
-			if (Count == 0) throw new InvalidOperationException("Must have cards to draw");
+			if (Count == 0) throw new DeckEmptyException();
 			return new ImmutableDrawSingleResult(
 				new ImmutableCardSet(mCards.Skip(1)),
 				mCards[0]);

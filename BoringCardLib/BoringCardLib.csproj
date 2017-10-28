@@ -72,6 +72,7 @@
     <Compile Include="API\Exchange\ReplaceResult.cs" />
     <Compile Include="API\Exchange\DiscardResult.cs" />
     <Compile Include="API\RankExtensions.cs" />
+    <Compile Include="API\DeckEmptyException.cs" />
     <Compile Include="DefaultCardComparer.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Random\DefaultRandomSource.cs" />

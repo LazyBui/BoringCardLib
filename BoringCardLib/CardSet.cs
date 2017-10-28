@@ -45,7 +45,7 @@ namespace BoringCardLib {
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card First {
 			get {
-				if (mCards.Count == 0) throw new InvalidOperationException("Must have cards to view the first");
+				if (mCards.Count == 0) throw new DeckEmptyException();
 				return mCards[0];
 			}
 		}
@@ -55,7 +55,7 @@ namespace BoringCardLib {
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card Last {
 			get {
-				if (mCards.Count == 0) throw new InvalidOperationException("Must have cards to view the last");
+				if (mCards.Count == 0) throw new DeckEmptyException();
 				return mCards[mCards.Count - 1];
 			}
 		}
@@ -324,7 +324,7 @@ namespace BoringCardLib {
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card GetRandom(IRandomSource sampler) {
 			sampler.ThrowIfNull(nameof(sampler));
-			if (Count == 0) throw new InvalidOperationException("Must have cards to return a random card");
+			if (Count == 0) throw new DeckEmptyException();
 			return this[sampler.SampleInt32(Count)];
 		}
 
@@ -501,7 +501,7 @@ namespace BoringCardLib {
 		/// <returns>The result of <see cref="First" />.</returns>
 		/// <exception cref="InvalidOperationException"><see cref="Count" /> is 0.</exception>
 		public Card Draw() {
-			if (mCards.Count == 0) throw new InvalidOperationException("Must have cards to draw");
+			if (mCards.Count == 0) throw new DeckEmptyException();
 			var result = mCards[0];
 			mCards.RemoveAt(0);
 			return result;
