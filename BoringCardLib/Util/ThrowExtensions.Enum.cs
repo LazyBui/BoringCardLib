@@ -100,7 +100,7 @@ namespace BoringCardLib {
 			if (object.ReferenceEquals(@this, null)) throw new ArgumentNullException(nameof(@this));
 			var attrs = @this.GetCustomAttributes(typeof(TAttribute), false);
 			if (attrs.Length == 0) return null;
-			if (attrs.Length > 1) throw new InvalidOperationException();
+			if (attrs.Length > 1) throw new InvalidOperationException("There were multiple attributes of the specified type");
 			return (TAttribute)attrs[0];
 		}
 		#endif
