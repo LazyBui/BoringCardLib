@@ -92,8 +92,8 @@ namespace BoringCardLib.Tests {
 			Assert.Same(bottom, deck[deck.Count - 1]);
 
 			deck = new ImmutableCardSet();
-			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.First; });
-			Assert.ThrowsExact<InvalidOperationException>(() => { var x = deck.Last; });
+			Assert.ThrowsExact<DeckEmptyException>(() => { var x = deck.First; });
+			Assert.ThrowsExact<DeckEmptyException>(() => { var x = deck.Last; });
 
 			deck = new ImmutableCardSet(Card.Joker);
 			top = deck.First;
