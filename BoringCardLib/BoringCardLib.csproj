@@ -87,7 +87,9 @@
     <Compile Include="API\Exchange\DiscardRequest.cs" />
     <Compile Include="API\Direction.cs" />
     <Compile Include="Util\Hasher.cs" />
-    <Compile Include="Util\Operators.cs" />
+    <Compile Include="Util\NullableExtensions.cs" />
+    <Compile Include="Util\ObjectExtensions.cs" />
+    <Compile Include="Util\OperatorsClass.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="API\SuitExtensions.cs" />
     <Compile Include="API\Rank.cs" />

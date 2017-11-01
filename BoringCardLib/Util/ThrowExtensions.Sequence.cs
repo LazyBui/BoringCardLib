@@ -32,7 +32,7 @@ namespace BoringCardLib {
 
 		[DebuggerStepThrough]
 		public static void ThrowIfContainsNulls<TValue>(this IEnumerable<TValue> @this, string name = null) where TValue : class {
-			if (@this.Any(v => object.ReferenceEquals(v, null))) throw new ArgumentException("Must have no null elements", name);
+			if (@this.Any(v => v.IsNull())) throw new ArgumentException("Must have no null elements", name);
 		}
 
 		[DebuggerStepThrough]

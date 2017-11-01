@@ -47,7 +47,7 @@ namespace BoringCardLib {
 			numberOfCards.ThrowIfZeroOrLess(nameof(numberOfCards));
 			distributionPolicy.ThrowIfInvalid(nameof(distributionPolicy));
 			remainderPolicy.ThrowIfInvalid(nameof(remainderPolicy));
-			if ((numberOfPiles == null) == (numberOfCards == null)) throw new ArgumentException($"Must specify one of {nameof(numberOfPiles)} and {nameof(numberOfCards)}");
+			if (numberOfPiles.IsNull() == numberOfCards.IsNull()) throw new ArgumentException($"Must specify one of {nameof(numberOfPiles)} and {nameof(numberOfCards)}");
 
 			Piles = numberOfPiles;
 			Cards = numberOfCards;

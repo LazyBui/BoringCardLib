@@ -120,7 +120,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="jokerCount" /> is negative.</exception>
 		public static CardSet MakeStandardDeck(int jokerCount = 0, Func<Card, Card> initializeValues = null) {
 			jokerCount.ThrowIfNegative(nameof(jokerCount));
-			if (initializeValues == null) initializeValues = c => c;
+			if (initializeValues.IsNull()) initializeValues = c => c;
 
 			var cards = new List<Card>();
 			int suits = 0;
@@ -149,7 +149,7 @@ namespace BoringCardLib {
 		public static CardSet MakeFullSuit(Suit suit, Func<Card, Card> initializeValues = null) {
 			suit.ThrowIfInvalid(nameof(suit));
 			if (suit == Suit.Joker) throw new ArgumentException("Must not be a joker", nameof(suit));
-			if (initializeValues == null) initializeValues = c => c;
+			if (initializeValues.IsNull()) initializeValues = c => c;
 
 			var cards = new List<Card>();
 			foreach (var rank in sRankOrdering) {
@@ -169,7 +169,7 @@ namespace BoringCardLib {
 		public static CardSet MakeFullRank(Rank rank, Func<Card, Card> initializeValues = null) {
 			rank.ThrowIfInvalid(nameof(rank));
 			if (rank == Rank.Joker) throw new ArgumentException("Must not be a joker", nameof(rank));
-			if (initializeValues == null) initializeValues = c => c;
+			if (initializeValues.IsNull()) initializeValues = c => c;
 
 			var cards = new List<Card>();
 			foreach (var suit in sSuitOrdering) {
@@ -188,7 +188,7 @@ namespace BoringCardLib {
 		/// <exception cref="ArgumentException"><paramref name="jokerCount" /> is 0 or less.</exception>
 		public static CardSet MakeJokers(int jokerCount, Func<Card, Card> initializeValues = null) {
 			jokerCount.ThrowIfZeroOrLess(nameof(jokerCount));
-			if (initializeValues == null) initializeValues = c => c;
+			if (initializeValues.IsNull()) initializeValues = c => c;
 
 			var cards = new List<Card>();
 			for (int i = 0; i < jokerCount; i++) {
@@ -620,7 +620,7 @@ namespace BoringCardLib {
 			for (int i = 0; i < mCards.Count; i++) {
 				var c = mCards[i];
 				var replacement = req.FirstOrDefault(card => comparer.Equals(c, card.Item.Card));
-				if (replacement == null) continue;
+				if (replacement.IsNull()) continue;
 
 				mCards[i] = replacement.Item.Replacement;
 				replacements.Add(replacement.Item.Card);
@@ -731,7 +731,7 @@ namespace BoringCardLib {
 		public DiscardResult Discard(IEqualityComparer<Card> comparer, DiscardRequest request) {
 			comparer.ThrowIfNull(nameof(comparer));
 			request.ThrowIfNull(nameof(request));
-			bool hasQuantity = request.Quantity != null;
+			bool hasQuantity = request.Quantity.IsNotNull();
 			bool hasSkip = request.Skip > 0;
 			bool hasOffset = request.Offset > 0;
 			if (hasOffset && request.Offset >= Count) throw new ArgumentException($"Must have an {nameof(DiscardRequest.Offset)} of less than the count", nameof(request));
@@ -834,8 +834,8 @@ namespace BoringCardLib {
 					bool rankValid = !hasRank || ranks.Contains(card.Rank);
 					bool suitValid = !hasSuit || suits.Contains(card.Suit);
 					bool valueValid =
-						(!hasValues || (card.Value != null && values.Contains(card.Value.GetValueOrDefault()))) ||
-						(request.NullValues && card.Value == null);
+						(!hasValues || (card.Value.IsNotNull() && values.Contains(card.Value.GetValueOrDefault()))) ||
+						(request.NullValues && card.Value.IsNull());
 					return rankValid && suitValid && valueValid;
 				};
 

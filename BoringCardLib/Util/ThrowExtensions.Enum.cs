@@ -10,7 +10,7 @@ namespace BoringCardLib {
 
 		[DebuggerStepThrough]
 		public static void ThrowIfInvalid(this Enum @this, string name = null) {
-			if (object.ReferenceEquals(@this, null)) throw new ArgumentNullException(name);
+			if (@this.IsNull()) throw new ArgumentNullException(name);
 			if (!HasValidValue(@this)) throw new ArgumentException("Must have a valid value", name);
 		}
 
@@ -30,20 +30,20 @@ namespace BoringCardLib {
 		}
 
 		public static bool HasValidValue(this Enum @this) {
-			if (object.ReferenceEquals(@this, null)) throw new ArgumentNullException(nameof(@this));
+			if (@this.IsNull()) throw new ArgumentNullException(nameof(@this));
 			Type enumType = @this.GetType();
 			return HasValidValue(@this, enumType);
 		}
 
 		internal static bool HasValidValue(this Enum @this, Type enumType) {
-			if (object.ReferenceEquals(@this, null)) throw new ArgumentNullException(nameof(@this));
-			if (object.ReferenceEquals(enumType, null)) throw new ArgumentNullException(nameof(enumType));
+			if (@this.IsNull()) throw new ArgumentNullException(nameof(@this));
+			if (enumType.IsNull()) throw new ArgumentNullException(nameof(enumType));
 			if (HasFlags(enumType)) return AllFlagsValuesDefined(@this, enumType);
 			return Enum.IsDefined(enumType, @this);
 		}
 
 		private static bool HasFlags(Type enumType) {
-			return enumType.GetCustomAttribute<FlagsAttribute>() != null;
+			return enumType.GetCustomAttribute<FlagsAttribute>().IsNotNull();
 		}
 
 		private static bool AllFlagsValuesDefined(Enum value, Type enumType) {
@@ -97,7 +97,7 @@ namespace BoringCardLib {
 
 		#if NETFX_40_OR_LOWER
 		public static TAttribute GetCustomAttribute<TAttribute>(this Type @this) where TAttribute : Attribute {
-			if (object.ReferenceEquals(@this, null)) throw new ArgumentNullException(nameof(@this));
+			if (@this.IsNull()) throw new ArgumentNullException(nameof(@this));
 			var attrs = @this.GetCustomAttributes(typeof(TAttribute), false);
 			if (attrs.Length == 0) return null;
 			if (attrs.Length > 1) throw new InvalidOperationException("There were multiple attributes of the specified type");

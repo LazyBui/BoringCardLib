@@ -19,8 +19,8 @@ namespace BoringCardLib {
 		/// <returns>-1 if <paramref name="x"/> is less than <paramref name="y" />, 0 if they are equal, and 1 if <paramref name="x"/> is greater than <paramref name="y" />.</returns>
 		public int Compare(Card x, Card y) {
 			if (object.ReferenceEquals(x, y)) return 0;
-			if (object.ReferenceEquals(x, null)) return -1;
-			if (object.ReferenceEquals(y, null)) return 1;
+			if (x.IsNull()) return -1;
+			if (y.IsNull()) return 1;
 			return GetCardIndex(x).CompareTo(GetCardIndex(y));
 		}
 
@@ -32,8 +32,8 @@ namespace BoringCardLib {
 		/// <returns>true if the specified objects are equal; otherwise, false.</returns>
 		public bool Equals(Card x, Card y) {
 			if (object.ReferenceEquals(x, y)) return true;
-			if (object.ReferenceEquals(x, null)) return false;
-			if (object.ReferenceEquals(y, null)) return false;
+			if (x.IsNull()) return false;
+			if (y.IsNull()) return false;
 			return x.Equals(y);
 		}
 

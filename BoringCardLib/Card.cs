@@ -103,6 +103,7 @@ namespace BoringCardLib {
 		/// </summary>
 		/// <returns>A new <see cref="Card" /> instance.</returns>
 		public Card WithoutValue() {
+			if (IsJoker) return Joker;
 			return new Card(Suit, Rank);
 		}
 
@@ -111,6 +112,7 @@ namespace BoringCardLib {
 		/// </summary>
 		/// <returns>A new <see cref="Card" /> instance.</returns>
 		public Card Duplicate() {
+			if (!HasValue && IsJoker) return Joker;
 			return new Card(Suit, Rank, pointValue: Value);
 		}
 
@@ -254,7 +256,7 @@ namespace BoringCardLib {
 		/// <param name="other">The <see cref="Card" /> to compare.</param>
 		/// <returns>true if the object is not null and its <see cref="Rank" />, <see cref="Suit" />, and value match. Otheriwse, it returns false.</returns>
 		public bool Equals(Card other) {
-			if (other == null) return false;
+			if (other.IsNull()) return false;
 			return new ValueEqualityTester().
 				Equal(other.Suit, Suit).
 				Equal(other.Rank, Rank).
@@ -264,11 +266,11 @@ namespace BoringCardLib {
 
 #pragma warning disable 1591
 		public static bool operator ==(Card lhs, Card rhs) {
-			return Operators.Equals(lhs, rhs);
+			return OperatorsClass.Equal(lhs, rhs);
 		}
 
 		public static bool operator !=(Card lhs, Card rhs) {
-			return Operators.NotEquals(lhs, rhs);
+			return OperatorsClass.NotEqual(lhs, rhs);
 		}
 #pragma warning restore 1591
 	}

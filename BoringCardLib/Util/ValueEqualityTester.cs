@@ -15,7 +15,7 @@ namespace BoringCardLib {
 		public ValueEqualityTester Equal(object left, object right) {
 			if (AnyUnequal || object.ReferenceEquals(left, right)) return this;
 
-			if (object.ReferenceEquals(left, null) || object.ReferenceEquals(right, null)) return Equal(false);
+			if (left.IsNull() || right.IsNull()) return Equal(false);
 
 			Type leftType = left.GetType();
 			Type rightType = right.GetType();
@@ -44,7 +44,7 @@ namespace BoringCardLib {
 			}
 			else {
 				var equalityChecker = left as IComparable;
-				if (equalityChecker != null) {
+				if (equalityChecker.IsNotNull()) {
 					if (equalityChecker.CompareTo(right) != 0) return Equal(false);
 				}
 				else if (!left.Equals(right)) return Equal(false);

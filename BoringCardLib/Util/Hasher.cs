@@ -24,7 +24,7 @@ namespace BoringCardLib {
 
 		public Hasher Combine<TElement>(IEnumerable<TElement> value) {
 			Combine(0);
-			if (value == null) return this;
+			if (value.IsNull()) return this;
 			foreach (var data in value) {
 				Combine(data);
 			}
@@ -33,7 +33,7 @@ namespace BoringCardLib {
 
 		public Hasher Combine<TElement>(IEnumerable<TElement> value, IEqualityComparer<TElement> comparer) {
 			Combine(0);
-			if (object.ReferenceEquals(value, null)) return this;
+			if (value.IsNull()) return this;
 			foreach (var data in value) {
 				Combine(data, comparer);
 			}
@@ -42,7 +42,7 @@ namespace BoringCardLib {
 
 		public Hasher Combine(object value) {
 			int hashCode = 0;
-			if (!object.ReferenceEquals(value, null)) hashCode = value.GetHashCode();
+			if (value.IsNotNull()) hashCode = value.GetHashCode();
 			return Combine(hashCode);
 		}
 
